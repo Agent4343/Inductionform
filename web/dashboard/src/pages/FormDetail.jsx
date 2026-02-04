@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../services/api'
+import { downloadFormPDF, printFormPDF, getFormPDFBase64 } from '../utils/pdfExport'
 import {
   ArrowLeft,
   FileText,
@@ -63,6 +64,36 @@ function FormDetail() {
       setShowRejectModal(false)
     } catch (err) {
       console.error('Failed to reject form:', err)
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    try {
+      await downloadFormPDF(form, { includeSignatures: true })
+    } catch (err) {
+      console.error('Failed to generate PDF:', err)
+      alert('Failed to generate PDF. Please try again.')
+    }
+  }
+
+  const handlePrintPDF = async () => {
+    try {
+      await printFormPDF(form, { includeSignatures: true })
+    } catch (err) {
+      console.error('Failed to print PDF:', err)
+      alert('Failed to print. Please try again.')
+    }
+  }
+
+  const handleEmailPDF = async () => {
+    try {
+      const pdfBase64 = await getFormPDFBase64(form, { includeSignatures: true })
+      const subject = encodeURIComponent(`Form: ${form.title || form.templateName}`)
+      const body = encodeURIComponent(`Please find attached the form "${form.title || form.templateName}".\n\nStatus: ${form.status}\nSubmitted: ${new Date(form.createdAt).toLocaleString()}`)
+      window.location.href = `mailto:?subject=${subject}&body=${body}`
+    } catch (err) {
+      console.error('Failed to prepare email:', err)
+      alert('Failed to prepare email. Please try again.')
     }
   }
 
@@ -240,15 +271,15 @@ function FormDetail() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="btn btn-secondary flex items-center gap-2">
+          <button onClick={handleDownloadPDF} className="btn btn-secondary flex items-center gap-2">
             <Download size={16} />
             <span className="hidden sm:inline">Download PDF</span>
           </button>
-          <button className="btn btn-secondary flex items-center gap-2">
+          <button onClick={handlePrintPDF} className="btn btn-secondary flex items-center gap-2">
             <Printer size={16} />
             <span className="hidden sm:inline">Print</span>
           </button>
-          <button className="btn btn-secondary flex items-center gap-2">
+          <button onClick={handleEmailPDF} className="btn btn-secondary flex items-center gap-2">
             <Mail size={16} />
             <span className="hidden sm:inline">Email</span>
           </button>
