@@ -1,0 +1,65 @@
+{
+  "appName": "DigitalForms",
+  "version": "1.0.0",
+  "api": {
+    "production": "https://your-backend.railway.app/api",
+    "staging": "https://staging.railway.app/api",
+    "development": "http://localhost:3000/api"
+  },
+  "features": {
+    "offlineMode": true,
+    "legalSignatures": true,
+    "photoAnnotation": true,
+    "voiceInput": true,
+    "barcodeScanning": true,
+    "gpsTracking": true,
+    "pdfExport": true,
+    "emailSharing": true
+  },
+  "signature": {
+    "legalFramework": "PIPEDA (Canada)",
+    "captureFields": [
+      "signerName",
+      "signerEmail",
+      "timestamp",
+      "ipAddress",
+      "deviceId",
+      "gpsCoordinates",
+      "documentHash",
+      "consentText"
+    ],
+    "hashAlgorithm": "SHA-256",
+    "consentText": "I acknowledge that by providing my electronic signature, I am agreeing to sign this document electronically. I understand this electronic signature is legally binding and has the same legal effect as a handwritten signature under Canadian law."
+  },
+  "sync": {
+    "autoSyncInterval": 30000,
+    "retryAttempts": 3,
+    "conflictResolution": "serverWins"
+  },
+  "fieldTypes": [
+    "text",
+    "textarea",
+    "number",
+    "email",
+    "phone",
+    "date",
+    "time",
+    "checkbox",
+    "yesNo",
+    "dropdown",
+    "multiSelect",
+    "signature",
+    "photo",
+    "location",
+    "currency",
+    "rating",
+    "slider",
+    "section"
+  ],
+  "formStatuses": [
+    "draft",
+    "submitted",
+    "approved",
+    "rejected"
+  ]
+}

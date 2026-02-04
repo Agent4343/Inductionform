@@ -1,0 +1,957 @@
+{
+  "templates": [
+    {
+      "id": "safety-inspection-001",
+      "name": "Daily Safety Inspection",
+      "category": "Safety",
+      "description": "Quick daily safety walkthrough for industrial sites",
+      "estimatedTime": "5-10 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "header",
+          "type": "section",
+          "label": "Inspection Details"
+        },
+        {
+          "id": "date",
+          "type": "date",
+          "label": "Inspection Date",
+          "required": true
+        },
+        {
+          "id": "location",
+          "type": "dropdown",
+          "label": "Work Area / Location",
+          "required": true,
+          "options": ["Warehouse A", "Warehouse B", "Loading Dock", "Manufacturing Floor", "Office Area", "Parking Lot", "Other"]
+        },
+        {
+          "id": "shift",
+          "type": "dropdown",
+          "label": "Shift",
+          "required": true,
+          "options": ["Day Shift", "Afternoon Shift", "Night Shift"]
+        },
+        {
+          "id": "inspector",
+          "type": "text",
+          "label": "Inspector Name",
+          "required": true
+        },
+        {
+          "id": "ppe-section",
+          "type": "section",
+          "label": "Personal Protective Equipment (PPE)"
+        },
+        {
+          "id": "ppe-available",
+          "type": "yesNo",
+          "label": "Required PPE available and in good condition?",
+          "required": true
+        },
+        {
+          "id": "ppe-worn",
+          "type": "yesNo",
+          "label": "All personnel wearing required PPE?",
+          "required": true
+        },
+        {
+          "id": "housekeeping-section",
+          "type": "section",
+          "label": "Housekeeping"
+        },
+        {
+          "id": "floors-clear",
+          "type": "yesNo",
+          "label": "Floors clear of debris and spills?",
+          "required": true
+        },
+        {
+          "id": "aisles-clear",
+          "type": "yesNo",
+          "label": "Aisles and walkways clear?",
+          "required": true
+        },
+        {
+          "id": "waste-disposed",
+          "type": "yesNo",
+          "label": "Waste properly disposed?",
+          "required": true
+        },
+        {
+          "id": "equipment-section",
+          "type": "section",
+          "label": "Equipment & Machinery"
+        },
+        {
+          "id": "guards-in-place",
+          "type": "yesNo",
+          "label": "All machine guards in place?",
+          "required": true
+        },
+        {
+          "id": "equipment-condition",
+          "type": "yesNo",
+          "label": "Equipment in safe operating condition?",
+          "required": true
+        },
+        {
+          "id": "lockout-tagout",
+          "type": "yesNo",
+          "label": "Lockout/Tagout procedures followed?",
+          "required": true
+        },
+        {
+          "id": "emergency-section",
+          "type": "section",
+          "label": "Emergency Preparedness"
+        },
+        {
+          "id": "exits-clear",
+          "type": "yesNo",
+          "label": "Emergency exits clear and accessible?",
+          "required": true
+        },
+        {
+          "id": "extinguishers-ok",
+          "type": "yesNo",
+          "label": "Fire extinguishers accessible and charged?",
+          "required": true
+        },
+        {
+          "id": "first-aid-stocked",
+          "type": "yesNo",
+          "label": "First aid kit stocked and accessible?",
+          "required": true
+        },
+        {
+          "id": "issues-section",
+          "type": "section",
+          "label": "Issues & Actions"
+        },
+        {
+          "id": "hazards-found",
+          "type": "yesNo",
+          "label": "Any hazards identified?",
+          "required": true
+        },
+        {
+          "id": "hazard-description",
+          "type": "textarea",
+          "label": "Describe hazards found (if any)",
+          "required": false,
+          "placeholder": "Describe any safety concerns..."
+        },
+        {
+          "id": "hazard-photo",
+          "type": "photo",
+          "label": "Photo of hazard (if applicable)",
+          "required": false
+        },
+        {
+          "id": "corrective-action",
+          "type": "textarea",
+          "label": "Corrective actions taken or required",
+          "required": false
+        },
+        {
+          "id": "overall-rating",
+          "type": "dropdown",
+          "label": "Overall Safety Rating",
+          "required": true,
+          "options": ["Satisfactory", "Needs Improvement", "Unsatisfactory - Immediate Action Required"]
+        },
+        {
+          "id": "comments",
+          "type": "textarea",
+          "label": "Additional Comments",
+          "required": false
+        },
+        {
+          "id": "signature-section",
+          "type": "section",
+          "label": "Verification"
+        },
+        {
+          "id": "inspector-signature",
+          "type": "signature",
+          "label": "Inspector Signature",
+          "required": true
+        },
+        {
+          "id": "gps-location",
+          "type": "location",
+          "label": "GPS Location",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "incident-report-001",
+      "name": "Incident / Accident Report",
+      "category": "Safety",
+      "description": "Document workplace incidents and near-misses",
+      "estimatedTime": "10-15 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "header",
+          "type": "section",
+          "label": "Incident Information"
+        },
+        {
+          "id": "incident-date",
+          "type": "date",
+          "label": "Date of Incident",
+          "required": true
+        },
+        {
+          "id": "incident-time",
+          "type": "time",
+          "label": "Time of Incident",
+          "required": true
+        },
+        {
+          "id": "incident-type",
+          "type": "dropdown",
+          "label": "Type of Incident",
+          "required": true,
+          "options": ["Injury - First Aid", "Injury - Medical Treatment", "Injury - Lost Time", "Near Miss", "Property Damage", "Environmental", "Vehicle Incident", "Other"]
+        },
+        {
+          "id": "location",
+          "type": "text",
+          "label": "Location of Incident",
+          "required": true
+        },
+        {
+          "id": "injured-section",
+          "type": "section",
+          "label": "Injured Person Details"
+        },
+        {
+          "id": "injured-name",
+          "type": "text",
+          "label": "Name of Injured Person",
+          "required": false
+        },
+        {
+          "id": "injured-job",
+          "type": "text",
+          "label": "Job Title / Role",
+          "required": false
+        },
+        {
+          "id": "injury-type",
+          "type": "multiSelect",
+          "label": "Type of Injury",
+          "required": false,
+          "options": ["Cut/Laceration", "Bruise/Contusion", "Sprain/Strain", "Fracture", "Burn", "Eye Injury", "Respiratory", "Other"]
+        },
+        {
+          "id": "body-part",
+          "type": "multiSelect",
+          "label": "Body Part Affected",
+          "required": false,
+          "options": ["Head", "Eyes", "Face", "Neck", "Back", "Chest", "Arm", "Hand", "Leg", "Foot", "Multiple"]
+        },
+        {
+          "id": "description-section",
+          "type": "section",
+          "label": "Incident Description"
+        },
+        {
+          "id": "description",
+          "type": "textarea",
+          "label": "Describe what happened",
+          "required": true,
+          "placeholder": "Provide a detailed description of the incident..."
+        },
+        {
+          "id": "immediate-cause",
+          "type": "textarea",
+          "label": "Immediate cause of incident",
+          "required": true
+        },
+        {
+          "id": "witnesses",
+          "type": "textarea",
+          "label": "Witness names and contact info",
+          "required": false
+        },
+        {
+          "id": "photo1",
+          "type": "photo",
+          "label": "Photo 1 - Scene",
+          "required": false
+        },
+        {
+          "id": "photo2",
+          "type": "photo",
+          "label": "Photo 2 - Additional",
+          "required": false
+        },
+        {
+          "id": "treatment-section",
+          "type": "section",
+          "label": "Treatment & Response"
+        },
+        {
+          "id": "first-aid-given",
+          "type": "yesNo",
+          "label": "First aid administered on site?",
+          "required": true
+        },
+        {
+          "id": "first-aid-details",
+          "type": "textarea",
+          "label": "First aid details",
+          "required": false
+        },
+        {
+          "id": "medical-attention",
+          "type": "yesNo",
+          "label": "Medical attention required?",
+          "required": true
+        },
+        {
+          "id": "hospital-name",
+          "type": "text",
+          "label": "Hospital/Clinic name (if applicable)",
+          "required": false
+        },
+        {
+          "id": "corrective-section",
+          "type": "section",
+          "label": "Corrective Actions"
+        },
+        {
+          "id": "immediate-actions",
+          "type": "textarea",
+          "label": "Immediate corrective actions taken",
+          "required": true
+        },
+        {
+          "id": "preventive-actions",
+          "type": "textarea",
+          "label": "Recommended preventive measures",
+          "required": true
+        },
+        {
+          "id": "signature-section",
+          "type": "section",
+          "label": "Signatures"
+        },
+        {
+          "id": "reporter-name",
+          "type": "text",
+          "label": "Reporter Name",
+          "required": true
+        },
+        {
+          "id": "reporter-signature",
+          "type": "signature",
+          "label": "Reporter Signature",
+          "required": true
+        },
+        {
+          "id": "supervisor-name",
+          "type": "text",
+          "label": "Supervisor Name",
+          "required": true
+        },
+        {
+          "id": "supervisor-signature",
+          "type": "signature",
+          "label": "Supervisor Signature",
+          "required": true
+        },
+        {
+          "id": "gps-location",
+          "type": "location",
+          "label": "GPS Location",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "equipment-checklist-001",
+      "name": "Equipment Pre-Use Checklist",
+      "category": "Operations",
+      "description": "Pre-operation safety check for heavy equipment",
+      "estimatedTime": "5-10 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "header",
+          "type": "section",
+          "label": "Equipment Information"
+        },
+        {
+          "id": "date",
+          "type": "date",
+          "label": "Date",
+          "required": true
+        },
+        {
+          "id": "equipment-type",
+          "type": "dropdown",
+          "label": "Equipment Type",
+          "required": true,
+          "options": ["Forklift", "Scissor Lift", "Boom Lift", "Crane", "Excavator", "Loader", "Truck", "Other"]
+        },
+        {
+          "id": "equipment-id",
+          "type": "text",
+          "label": "Equipment ID / Number",
+          "required": true
+        },
+        {
+          "id": "hour-meter",
+          "type": "number",
+          "label": "Hour Meter Reading",
+          "required": false
+        },
+        {
+          "id": "operator",
+          "type": "text",
+          "label": "Operator Name",
+          "required": true
+        },
+        {
+          "id": "visual-section",
+          "type": "section",
+          "label": "Visual Inspection"
+        },
+        {
+          "id": "tires-wheels",
+          "type": "yesNo",
+          "label": "Tires/Wheels - Good condition, properly inflated?",
+          "required": true
+        },
+        {
+          "id": "fluid-leaks",
+          "type": "yesNo",
+          "label": "No fluid leaks visible?",
+          "required": true
+        },
+        {
+          "id": "body-damage",
+          "type": "yesNo",
+          "label": "No visible body damage?",
+          "required": true
+        },
+        {
+          "id": "lights-working",
+          "type": "yesNo",
+          "label": "All lights working?",
+          "required": true
+        },
+        {
+          "id": "mirrors-clean",
+          "type": "yesNo",
+          "label": "Mirrors clean and adjusted?",
+          "required": true
+        },
+        {
+          "id": "safety-section",
+          "type": "section",
+          "label": "Safety Features"
+        },
+        {
+          "id": "horn-working",
+          "type": "yesNo",
+          "label": "Horn working?",
+          "required": true
+        },
+        {
+          "id": "backup-alarm",
+          "type": "yesNo",
+          "label": "Backup alarm working?",
+          "required": true
+        },
+        {
+          "id": "seatbelt",
+          "type": "yesNo",
+          "label": "Seatbelt working?",
+          "required": true
+        },
+        {
+          "id": "fire-extinguisher",
+          "type": "yesNo",
+          "label": "Fire extinguisher present and charged?",
+          "required": true
+        },
+        {
+          "id": "emergency-stop",
+          "type": "yesNo",
+          "label": "Emergency stop functioning?",
+          "required": true
+        },
+        {
+          "id": "operational-section",
+          "type": "section",
+          "label": "Operational Check"
+        },
+        {
+          "id": "brakes",
+          "type": "yesNo",
+          "label": "Brakes functioning properly?",
+          "required": true
+        },
+        {
+          "id": "steering",
+          "type": "yesNo",
+          "label": "Steering responsive?",
+          "required": true
+        },
+        {
+          "id": "controls",
+          "type": "yesNo",
+          "label": "All controls functioning?",
+          "required": true
+        },
+        {
+          "id": "gauges",
+          "type": "yesNo",
+          "label": "Gauges and indicators working?",
+          "required": true
+        },
+        {
+          "id": "defects-section",
+          "type": "section",
+          "label": "Defects Found"
+        },
+        {
+          "id": "defects-found",
+          "type": "yesNo",
+          "label": "Any defects found?",
+          "required": true
+        },
+        {
+          "id": "defect-description",
+          "type": "textarea",
+          "label": "Describe defects",
+          "required": false
+        },
+        {
+          "id": "defect-photo",
+          "type": "photo",
+          "label": "Photo of defect",
+          "required": false
+        },
+        {
+          "id": "safe-to-operate",
+          "type": "yesNo",
+          "label": "Equipment safe to operate?",
+          "required": true
+        },
+        {
+          "id": "signature-section",
+          "type": "section",
+          "label": "Verification"
+        },
+        {
+          "id": "operator-signature",
+          "type": "signature",
+          "label": "Operator Signature",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "work-permit-001",
+      "name": "Hot Work Permit",
+      "category": "Permits",
+      "description": "Authorization for welding, cutting, and other hot work",
+      "estimatedTime": "10 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "header",
+          "type": "section",
+          "label": "Permit Information"
+        },
+        {
+          "id": "permit-date",
+          "type": "date",
+          "label": "Permit Date",
+          "required": true
+        },
+        {
+          "id": "start-time",
+          "type": "time",
+          "label": "Start Time",
+          "required": true
+        },
+        {
+          "id": "end-time",
+          "type": "time",
+          "label": "End Time",
+          "required": true
+        },
+        {
+          "id": "location",
+          "type": "text",
+          "label": "Work Location",
+          "required": true
+        },
+        {
+          "id": "work-type",
+          "type": "multiSelect",
+          "label": "Type of Hot Work",
+          "required": true,
+          "options": ["Welding", "Cutting", "Brazing", "Soldering", "Grinding", "Other"]
+        },
+        {
+          "id": "work-description",
+          "type": "textarea",
+          "label": "Description of Work",
+          "required": true
+        },
+        {
+          "id": "personnel-section",
+          "type": "section",
+          "label": "Personnel"
+        },
+        {
+          "id": "worker-name",
+          "type": "text",
+          "label": "Worker Performing Hot Work",
+          "required": true
+        },
+        {
+          "id": "fire-watch-name",
+          "type": "text",
+          "label": "Fire Watch Person",
+          "required": true
+        },
+        {
+          "id": "precautions-section",
+          "type": "section",
+          "label": "Fire Prevention Precautions"
+        },
+        {
+          "id": "combustibles-removed",
+          "type": "yesNo",
+          "label": "Combustibles removed or protected (35ft radius)?",
+          "required": true
+        },
+        {
+          "id": "floors-swept",
+          "type": "yesNo",
+          "label": "Floors swept clean?",
+          "required": true
+        },
+        {
+          "id": "openings-covered",
+          "type": "yesNo",
+          "label": "Floor/wall openings covered?",
+          "required": true
+        },
+        {
+          "id": "fire-extinguisher-present",
+          "type": "yesNo",
+          "label": "Fire extinguisher within 20ft?",
+          "required": true
+        },
+        {
+          "id": "sprinklers-operational",
+          "type": "yesNo",
+          "label": "Sprinkler system operational?",
+          "required": true
+        },
+        {
+          "id": "ventilation",
+          "type": "yesNo",
+          "label": "Adequate ventilation provided?",
+          "required": true
+        },
+        {
+          "id": "gas-testing",
+          "type": "yesNo",
+          "label": "Atmosphere tested (if confined space)?",
+          "required": false
+        },
+        {
+          "id": "authorization-section",
+          "type": "section",
+          "label": "Authorization"
+        },
+        {
+          "id": "worker-signature",
+          "type": "signature",
+          "label": "Worker Signature",
+          "required": true
+        },
+        {
+          "id": "fire-watch-signature",
+          "type": "signature",
+          "label": "Fire Watch Signature",
+          "required": true
+        },
+        {
+          "id": "supervisor-signature",
+          "type": "signature",
+          "label": "Supervisor Authorization",
+          "required": true
+        },
+        {
+          "id": "completion-section",
+          "type": "section",
+          "label": "Work Completion"
+        },
+        {
+          "id": "work-completed",
+          "type": "yesNo",
+          "label": "Work completed?",
+          "required": false
+        },
+        {
+          "id": "area-inspected",
+          "type": "yesNo",
+          "label": "Area inspected 30 min after completion?",
+          "required": false
+        },
+        {
+          "id": "completion-signature",
+          "type": "signature",
+          "label": "Completion Signature",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "delivery-receipt-001",
+      "name": "Delivery Receipt",
+      "category": "Logistics",
+      "description": "Proof of delivery with signature capture",
+      "estimatedTime": "2-5 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "header",
+          "type": "section",
+          "label": "Delivery Information"
+        },
+        {
+          "id": "delivery-date",
+          "type": "date",
+          "label": "Delivery Date",
+          "required": true
+        },
+        {
+          "id": "delivery-time",
+          "type": "time",
+          "label": "Delivery Time",
+          "required": true
+        },
+        {
+          "id": "order-number",
+          "type": "text",
+          "label": "Order / PO Number",
+          "required": true
+        },
+        {
+          "id": "driver-name",
+          "type": "text",
+          "label": "Driver Name",
+          "required": true
+        },
+        {
+          "id": "vehicle-id",
+          "type": "text",
+          "label": "Vehicle / Truck ID",
+          "required": false
+        },
+        {
+          "id": "recipient-section",
+          "type": "section",
+          "label": "Recipient Information"
+        },
+        {
+          "id": "company-name",
+          "type": "text",
+          "label": "Company / Recipient Name",
+          "required": true
+        },
+        {
+          "id": "delivery-address",
+          "type": "textarea",
+          "label": "Delivery Address",
+          "required": true
+        },
+        {
+          "id": "receiver-name",
+          "type": "text",
+          "label": "Received By (Name)",
+          "required": true
+        },
+        {
+          "id": "items-section",
+          "type": "section",
+          "label": "Items Delivered"
+        },
+        {
+          "id": "items-description",
+          "type": "textarea",
+          "label": "Items / Description",
+          "required": true,
+          "placeholder": "List items delivered..."
+        },
+        {
+          "id": "quantity",
+          "type": "number",
+          "label": "Total Quantity / Pieces",
+          "required": true
+        },
+        {
+          "id": "condition-section",
+          "type": "section",
+          "label": "Condition"
+        },
+        {
+          "id": "condition",
+          "type": "dropdown",
+          "label": "Condition on Arrival",
+          "required": true,
+          "options": ["Good - No Damage", "Minor Damage", "Significant Damage", "Refused"]
+        },
+        {
+          "id": "damage-notes",
+          "type": "textarea",
+          "label": "Damage Notes (if any)",
+          "required": false
+        },
+        {
+          "id": "damage-photo",
+          "type": "photo",
+          "label": "Photo of Damage",
+          "required": false
+        },
+        {
+          "id": "signature-section",
+          "type": "section",
+          "label": "Signatures"
+        },
+        {
+          "id": "receiver-signature",
+          "type": "signature",
+          "label": "Receiver Signature",
+          "required": true
+        },
+        {
+          "id": "driver-signature",
+          "type": "signature",
+          "label": "Driver Signature",
+          "required": true
+        },
+        {
+          "id": "gps-location",
+          "type": "location",
+          "label": "Delivery Location (GPS)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "toolbox-talk-001",
+      "name": "Toolbox Talk / Safety Meeting",
+      "category": "Safety",
+      "description": "Document pre-shift safety briefings",
+      "estimatedTime": "5 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "header",
+          "type": "section",
+          "label": "Meeting Details"
+        },
+        {
+          "id": "date",
+          "type": "date",
+          "label": "Date",
+          "required": true
+        },
+        {
+          "id": "time",
+          "type": "time",
+          "label": "Time",
+          "required": true
+        },
+        {
+          "id": "location",
+          "type": "text",
+          "label": "Location",
+          "required": true
+        },
+        {
+          "id": "presenter",
+          "type": "text",
+          "label": "Presented By",
+          "required": true
+        },
+        {
+          "id": "topic-section",
+          "type": "section",
+          "label": "Topic"
+        },
+        {
+          "id": "topic",
+          "type": "dropdown",
+          "label": "Safety Topic",
+          "required": true,
+          "options": ["PPE Requirements", "Fall Protection", "Lockout/Tagout", "Hazard Communication", "Fire Safety", "Electrical Safety", "Manual Handling", "Heat Stress", "Cold Weather", "Confined Space", "Housekeeping", "Emergency Procedures", "Other"]
+        },
+        {
+          "id": "topic-details",
+          "type": "textarea",
+          "label": "Key Points Discussed",
+          "required": true
+        },
+        {
+          "id": "hazards-discussed",
+          "type": "textarea",
+          "label": "Specific Hazards Discussed",
+          "required": false
+        },
+        {
+          "id": "questions-section",
+          "type": "section",
+          "label": "Questions & Concerns"
+        },
+        {
+          "id": "questions-raised",
+          "type": "textarea",
+          "label": "Questions or Concerns Raised",
+          "required": false
+        },
+        {
+          "id": "attendance-section",
+          "type": "section",
+          "label": "Attendance"
+        },
+        {
+          "id": "attendee-count",
+          "type": "number",
+          "label": "Number of Attendees",
+          "required": true
+        },
+        {
+          "id": "attendee-names",
+          "type": "textarea",
+          "label": "Attendee Names",
+          "required": true,
+          "placeholder": "List all attendees..."
+        },
+        {
+          "id": "presenter-signature",
+          "type": "signature",
+          "label": "Presenter Signature",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
