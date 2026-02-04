@@ -433,61 +433,6 @@ struct FormFieldView: View {
     }
 }
 
-// MARK: - Field Types
-
-enum FieldType: String, CaseIterable {
-    case text, textarea, number, email, phone
-    case date, time, checkbox, yesNo, dropdown
-    case multiSelect, signature, photo, location
-    case currency, rating, slider, section
-
-    var displayName: String {
-        switch self {
-        case .text: return "Text"
-        case .textarea: return "Text Area"
-        case .number: return "Number"
-        case .email: return "Email"
-        case .phone: return "Phone"
-        case .date: return "Date"
-        case .time: return "Time"
-        case .checkbox: return "Checkbox"
-        case .yesNo: return "Yes/No"
-        case .dropdown: return "Dropdown"
-        case .multiSelect: return "Multi-Select"
-        case .signature: return "Signature"
-        case .photo: return "Photo"
-        case .location: return "Location"
-        case .currency: return "Currency"
-        case .rating: return "Rating"
-        case .slider: return "Slider"
-        case .section: return "Section"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .text: return "textformat"
-        case .textarea: return "text.alignleft"
-        case .number: return "number"
-        case .email: return "envelope"
-        case .phone: return "phone"
-        case .date: return "calendar"
-        case .time: return "clock"
-        case .checkbox: return "checkmark.square"
-        case .yesNo: return "hand.thumbsup"
-        case .dropdown: return "list.bullet"
-        case .multiSelect: return "checklist"
-        case .signature: return "signature"
-        case .photo: return "camera"
-        case .location: return "location"
-        case .currency: return "dollarsign.circle"
-        case .rating: return "star"
-        case .slider: return "slider.horizontal.3"
-        case .section: return "rectangle.split.3x1"
-        }
-    }
-}
-
 // MARK: - Location Field
 
 struct LocationFieldView: View {
