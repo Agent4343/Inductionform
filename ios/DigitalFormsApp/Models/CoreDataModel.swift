@@ -103,23 +103,4 @@ enum FieldType: String, Codable, CaseIterable {
     }
 }
 
-// MARK: - Form Status
-
-enum FormStatus: String, Codable, CaseIterable {
-    case draft
-    case submitted
-    case approved
-    case rejected
-
-    var displayName: String {
-        rawValue.capitalized
-    }
-}
-
-// MARK: - Sync Status
-
-enum SyncStatus: String, Codable {
-    case pending
-    case synced
-    case failed
-}
+// Note: FormStatus is defined in DataController.swift
