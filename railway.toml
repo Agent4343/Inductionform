@@ -1,0 +1,8 @@
+# Railway configuration for web dashboard
+# Change root to "backend" if deploying the API instead
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm run start"
