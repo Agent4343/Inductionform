@@ -8,7 +8,8 @@ import {
   LogOut,
   Bell,
   Menu,
-  X
+  X,
+  PenTool
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -25,6 +26,7 @@ function Layout() {
   const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/forms', icon: FileText, label: 'Forms' },
+    { to: '/builder', icon: PenTool, label: 'Form Builder' },
     { to: '/templates', icon: FolderOpen, label: 'Templates' },
     { to: '/settings', icon: Settings, label: 'Settings' },
   ]
