@@ -130,7 +130,7 @@ const migrate = async () => {
     console.log('✓ Created forms table');
 
     // ===================
-    // FORM SIGNATURES TABLE
+    // FORM SIGNATURES TABLE (Canadian legal compliance)
     // ===================
     await client.query(`
       CREATE TABLE IF NOT EXISTS form_signatures (
@@ -145,12 +145,19 @@ const migrate = async () => {
         signature_url VARCHAR(500),
         ip_address VARCHAR(45),
         user_agent TEXT,
+        device_id VARCHAR(255),
+        latitude DECIMAL(10, 8),
+        longitude DECIMAL(11, 8),
         signed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         witness_name VARCHAR(255),
-        witness_email VARCHAR(255)
+        witness_email VARCHAR(255),
+        -- Legal compliance fields (PIPEDA / Provincial ETAs)
+        document_hash VARCHAR(64) NOT NULL,
+        consent_given BOOLEAN NOT NULL DEFAULT true,
+        consent_text TEXT NOT NULL
       )
     `);
-    console.log('✓ Created form_signatures table');
+    console.log('✓ Created form_signatures table (with legal compliance fields)');
 
     // ===================
     // FORM ATTACHMENTS TABLE

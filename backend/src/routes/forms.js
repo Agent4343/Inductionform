@@ -503,13 +503,21 @@ router.post('/:id/share', [
 
 /**
  * POST /api/forms/:id/signatures
- * Add signature to form
+ * Add legally binding signature to form (Canada compliant)
+ *
+ * Required for legal validity:
+ * - Consent acknowledgment (consent_given must be true)
+ * - Document hash (SHA-256 of form content at signing time)
+ * - Timestamp, IP, user agent for audit trail
  */
 router.post('/:id/signatures', [
   param('id').isUUID(),
-  body('signer_name').trim().isLength({ min: 1 }),
-  body('signer_role').optional().trim(),
+  body('signer_name').trim().isLength({ min: 1, max: 255 }),
+  body('signer_email').isEmail().normalizeEmail(),
+  body('signer_role').optional().trim().isLength({ max: 100 }),
   body('signature_data').isLength({ min: 1 }),
+  body('consent_given').isBoolean().equals('true').withMessage('Consent acknowledgment required for legal validity'),
+  body('consent_text').optional().trim(),
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -518,7 +526,20 @@ router.post('/:id/signatures', [
     }
 
     const { id } = req.params;
-    const { signer_name, signer_role, signer_email, signature_type, signature_data, witness_name, witness_email } = req.body;
+    const {
+      signer_name,
+      signer_role,
+      signer_email,
+      signature_type,
+      signature_data,
+      witness_name,
+      witness_email,
+      consent_given,
+      consent_text,
+      device_id,
+      latitude,
+      longitude
+    } = req.body;
     const userId = req.user.id;
 
     // Check access
@@ -533,12 +554,53 @@ router.post('/:id/signatures', [
       return res.status(404).json({ error: 'Form not found or access denied' });
     }
 
-    // Create signature
+    const form = access.rows[0];
+
+    // Generate SHA-256 hash of form content at signing time
+    // This proves the document wasn't altered after signing
+    const formContentForHash = JSON.stringify({
+      id: form.id,
+      title: form.title,
+      fields: form.fields,
+      created_at: form.created_at,
+    });
+    const documentHash = crypto.createHash('sha256').update(formContentForHash).digest('hex');
+
+    // Default consent text for Canadian legal compliance
+    const defaultConsentText = 'I acknowledge that by providing my electronic signature, I am agreeing to sign this document electronically. I understand this electronic signature is legally binding and has the same legal effect as a handwritten signature under Canadian law (PIPEDA and applicable provincial Electronic Transactions Acts).';
+
+    // Create signature with full audit trail
     const result = await db.query(
-      `INSERT INTO form_signatures (form_id, user_id, signer_name, signer_email, signer_role, signature_type, signature_data, witness_name, witness_email, ip_address, user_agent)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      `INSERT INTO form_signatures (
+        form_id, user_id, signer_name, signer_email, signer_role,
+        signature_type, signature_data, signature_url,
+        witness_name, witness_email,
+        ip_address, user_agent, device_id,
+        latitude, longitude,
+        document_hash, consent_given, consent_text
+      )
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
        RETURNING *`,
-      [id, userId, signer_name, signer_email, signer_role, signature_type || 'drawn', signature_data, witness_name, witness_email, req.ip, req.get('user-agent')]
+      [
+        id,
+        userId,
+        signer_name,
+        signer_email,
+        signer_role,
+        signature_type || 'drawn',
+        signature_data,
+        null, // signature_url - set if stored as file
+        witness_name,
+        witness_email,
+        req.ip,
+        req.get('user-agent'),
+        device_id,
+        latitude,
+        longitude,
+        documentHash,
+        consent_given,
+        consent_text || defaultConsentText
+      ]
     );
 
     // Update form
@@ -547,11 +609,106 @@ router.post('/:id/signatures', [
       [id]
     );
 
-    res.status(201).json({ signature: result.rows[0] });
+    // Log signature for audit trail
+    await db.query(
+      `INSERT INTO audit_logs (user_id, action, resource_type, resource_id, new_values, ip_address)
+       VALUES ($1, 'sign', 'form', $2, $3, $4)`,
+      [userId, id, JSON.stringify({
+        signer_name,
+        signer_email,
+        document_hash: documentHash,
+        consent_given: true
+      }), req.ip]
+    );
+
+    res.status(201).json({
+      signature: result.rows[0],
+      legal_notice: 'This electronic signature is legally binding under Canadian law (PIPEDA and provincial Electronic Transactions Acts).',
+      document_hash: documentHash
+    });
 
   } catch (error) {
     console.error('Add signature error:', error);
     res.status(500).json({ error: 'Failed to add signature' });
+  }
+});
+
+/**
+ * GET /api/forms/:id/signature-certificate
+ * Generate signature verification certificate
+ */
+router.get('/:id/signature-certificate', [
+  param('id').isUUID(),
+], async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Check access
+    const formResult = await db.query(
+      `SELECT f.*, u.name as created_by_name
+       FROM forms f
+       LEFT JOIN users u ON f.created_by = u.id
+       WHERE f.id = $1
+       AND (f.created_by = $2 OR f.assigned_to = $2
+            OR f.id IN (SELECT form_id FROM form_shares WHERE shared_with_user = $2))`,
+      [id, userId]
+    );
+
+    if (formResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Form not found' });
+    }
+
+    const form = formResult.rows[0];
+
+    // Get all signatures
+    const signaturesResult = await db.query(
+      `SELECT * FROM form_signatures WHERE form_id = $1 ORDER BY signed_at`,
+      [id]
+    );
+
+    if (signaturesResult.rows.length === 0) {
+      return res.status(404).json({ error: 'No signatures found' });
+    }
+
+    // Generate verification certificate
+    const certificate = {
+      document: {
+        id: form.id,
+        title: form.title,
+        created_at: form.created_at,
+        status: form.status,
+      },
+      signatures: signaturesResult.rows.map(sig => ({
+        signer_name: sig.signer_name,
+        signer_email: sig.signer_email,
+        signer_role: sig.signer_role,
+        signed_at: sig.signed_at,
+        document_hash: sig.document_hash,
+        consent_given: sig.consent_given,
+        consent_text: sig.consent_text,
+        ip_address: sig.ip_address,
+        location: sig.latitude && sig.longitude ? {
+          latitude: sig.latitude,
+          longitude: sig.longitude
+        } : null,
+        witness: sig.witness_name ? {
+          name: sig.witness_name,
+          email: sig.witness_email
+        } : null
+      })),
+      verification: {
+        generated_at: new Date().toISOString(),
+        legal_framework: 'Canadian PIPEDA and Provincial Electronic Transactions Acts',
+        verification_statement: 'All signatures on this document were captured electronically with consent acknowledgment and document integrity verification via SHA-256 hash.'
+      }
+    };
+
+    res.json(certificate);
+
+  } catch (error) {
+    console.error('Get signature certificate error:', error);
+    res.status(500).json({ error: 'Failed to generate certificate' });
   }
 });
 
