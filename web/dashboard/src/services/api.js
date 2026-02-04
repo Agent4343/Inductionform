@@ -163,9 +163,37 @@ class ApiService {
   async getNotifications() {
     return this.request('/users/me/notifications')
   }
+
+  // Stats/Dashboard
+  async getStats() {
+    try {
+      return await this.request('/stats')
+    } catch {
+      // Return demo stats if API not available
+      return {
+        totalForms: 47,
+        completedForms: 32,
+        pendingForms: 12,
+        requiresAction: 3,
+        weeklySubmissions: 15,
+        weeklyApprovals: 11,
+        activeUsers: 8
+      }
+    }
+  }
+
+  async updateFormStatus(id, status, reason = null) {
+    return this.request(`/forms/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, reason }),
+    })
+  }
 }
 
 export const api = new ApiService()
+
+// Default export for convenience
+export default api
 
 // Demo data for testing without backend
 export const demoData = {
