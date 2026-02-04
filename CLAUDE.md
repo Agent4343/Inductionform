@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-**DigitalFormsApp** (Inductionform) is an iOS/iPadOS application for creating, capturing, signing, and submitting digital forms. Built with SwiftUI and Core Data, it supports offline usage with automatic sync when online.
+**DigitalFormsApp** (Inductionform) is a professional iOS/iPadOS application for creating, capturing, signing, and submitting digital forms. Built with SwiftUI and Core Data, it supports offline usage with automatic sync.
 
-> **Status**: Active development - Improved version with document scanning and enhanced form builder
+> **Status**: Full-featured version with all enterprise capabilities
 
 ---
 
@@ -14,46 +14,40 @@
 Inductionform/
 ├── CLAUDE.md                        # This file - AI assistant guide
 ├── CoreDataModel.md                 # Core Data entity documentation
-├── DigitalFormsApp_Improved.swift   # Main app source code (single file)
+├── DigitalFormsApp_Improved.swift   # Basic improved version
+├── DigitalFormsApp_Ultimate.swift   # Full-featured ultimate version
 └── .git/                            # Git version control
 ```
 
 ---
 
-## Key Features
+## Feature Summary
 
-### 1. Document Scanner
-- **VisionKit Integration**: Scan paper forms using the device camera
-- **OCR Text Recognition**: Automatically detect field labels from scanned documents
-- **Smart Field Type Detection**: Suggests appropriate field types based on label text
-- **Edit & Refine**: Modify detected fields before creating template
+### Core Features
+| Feature | Description |
+|---------|-------------|
+| Document Scanner | VisionKit OCR to scan paper forms |
+| Form Builder | Drag-and-drop visual form design |
+| PDF Export | Professional multi-page PDFs with sharing |
+| Email Integration | Native email composer with attachments |
+| Offline Support | Full functionality without internet |
+| Signature Capture | PencilKit-based signatures |
 
-### 2. Improved Form Builder
-- **Visual Drag-and-Drop**: Reorder fields by dragging
-- **Field Palette**: Quick access to all field types
-- **Live Preview**: See how fields will appear
-- **Quick Actions**: Fast buttons to add common field types
-- **18 Field Types**: text, number, date, time, email, phone, signature, photo, etc.
-
-### 3. PDF Export (Fixed)
-- **Professional Layout**: Multi-page support with proper pagination
-- **Complete Content**: Includes all fields, signatures, and attachments
-- **Share Sheet**: Native iOS sharing to any app
-- **Save to Files**: Export to device or cloud storage
-- **Print Support**: Direct printing capability
-
-### 4. Email Function (Fixed)
-- **MFMailComposeViewController**: Native email composer
-- **PDF Attachment**: Automatically attaches generated PDF
-- **Pre-filled Content**: Subject and body with form details
-
-### 5. Additional Features
-- **Offline Support**: Full functionality without internet
-- **Auto-Sync**: Syncs when connection restored
-- **Signature Capture**: PencilKit-based signature pad
-- **Photo Attachments**: Camera and photo library support
-- **GPS Location**: Automatic location capture
-- **Approval Workflow**: Submit, approve, reject forms
+### Ultimate Version Features
+| Feature | Description |
+|---------|-------------|
+| Conditional Logic | Show/hide fields based on answers |
+| Photo Annotation | Draw arrows, circles, text on photos |
+| Voice Input | Speech-to-text for hands-free filling |
+| Barcode/QR Scanner | Scan equipment IDs and codes |
+| Dashboard & Analytics | Stats, charts, compliance tracking |
+| Workflow Automation | Rules, triggers, auto-actions |
+| Advanced Signatures | Typed, drawn, initials, witness support |
+| Map Integration | View/share captured GPS locations |
+| Biometric Lock | Face ID / Touch ID security |
+| Auto-save | Automatic draft saving every 30 seconds |
+| Progress Indicator | Visual step-by-step progress |
+| Siri Shortcuts | Voice-activated form creation |
 
 ---
 
@@ -63,54 +57,98 @@ Inductionform/
 
 | Component | Purpose |
 |-----------|---------|
-| `DataController` | Core Data stack management, CRUD operations |
-| `AuthManager` | User authentication, keychain storage |
-| `SyncManager` | Network monitoring, data synchronization |
+| `DataController` | Core Data stack, CRUD operations |
+| `AuthManager` | Authentication, keychain storage |
+| `SyncManager` | Network monitoring, sync |
+| `AnalyticsManager` | Dashboard statistics |
+| `WorkflowEngine` | Automation rules execution |
+| `ConditionalLogicEngine` | Field visibility/requirement logic |
+| `VoiceInputManager` | Speech recognition |
+| `BiometricAuthManager` | Face ID / Touch ID |
+| `AutoSaveManager` | Draft auto-saving |
 | `PDFGenerator` | PDF document generation |
-| `DocumentTextRecognizer` | OCR processing for scanned documents |
-
-### Data Flow
-
-```
-User Input → SwiftUI Views → DataController → Core Data
-                                    ↓
-                              SyncManager → Backend API
-```
+| `DocumentTextRecognizer` | OCR processing |
 
 ### Key Design Patterns
 
 - **MVVM**: Views observe `@Published` properties
-- **Singleton**: Shared instances for controllers
-- **Dependency Injection**: Environment objects for managers
+- **Singleton**: Shared instances for managers
+- **Dependency Injection**: Environment objects
+- **Strategy Pattern**: Conditional logic evaluation
+- **Observer Pattern**: Workflow triggers
 
 ---
 
-## Core Data Entities
+## Field Types (18 Total)
 
-| Entity | Purpose |
-|--------|---------|
-| `User` | User accounts and profiles |
-| `FormTemplate` | Reusable form templates |
-| `TemplateField` | Field definitions in templates |
-| `FormEntity` | Filled-out form instances |
-| `FormField` | Field values in forms |
-| `Signature` | Captured signatures |
-| `Attachment` | Photo attachments |
-| `Approval` | Approval decisions |
-
-See `CoreDataModel.md` for complete schema documentation.
+| Type | Icon | Description |
+|------|------|-------------|
+| text | textformat | Single-line text input |
+| textarea | text.alignleft | Multi-line text input |
+| number | number | Numeric input |
+| email | envelope | Email with validation |
+| phone | phone | Phone number input |
+| date | calendar | Date picker |
+| time | clock | Time picker |
+| checkbox | checkmark.square | Boolean toggle |
+| yesNo | hand.thumbsup | Yes/No/NA selector |
+| dropdown | list.bullet | Single selection |
+| multiSelect | checklist | Multiple selection |
+| signature | signature | Signature capture |
+| photo | camera | Photo attachment |
+| location | location | GPS coordinates |
+| currency | dollarsign.circle | Currency input |
+| rating | star | Star rating (1-5) |
+| slider | slider.horizontal.3 | Range slider |
+| section | rectangle.split.3x1 | Section header |
 
 ---
 
-## Development Setup
+## Conditional Logic
 
-### Prerequisites
+### Operators
+- `equals` / `notEquals`
+- `contains`
+- `greaterThan` / `lessThan`
+- `isEmpty` / `isNotEmpty`
 
-- **Xcode**: 15.0 or later
-- **iOS Deployment Target**: iOS 17.0+
-- **Swift**: 5.9+
+### Actions
+- `show` / `hide` - Control field visibility
+- `require` / `optional` - Control requirement
 
-### Required Frameworks
+### Example
+```swift
+// If "Incident Type" equals "Injury", show "Medical Treatment" field
+FieldCondition(
+    sourceFieldId: incidentTypeFieldId,
+    operator_: .equals,
+    value: "Injury",
+    action: .show,
+    targetFieldIds: [medicalTreatmentFieldId]
+)
+```
+
+---
+
+## Workflow Automation
+
+### Triggers
+- `formSubmitted` - When form is submitted
+- `formApproved` - When form is approved
+- `formRejected` - When form is rejected
+- `fieldValueChanged` - When specific field changes
+
+### Actions
+- `sendEmail` - Send email notification
+- `assignApprover` - Auto-assign approver
+- `setFieldValue` - Auto-fill field
+- `createTask` - Create follow-up task
+- `sendNotification` - Push notification
+- `webhook` - Call external API
+
+---
+
+## Required Frameworks
 
 ```swift
 import SwiftUI
@@ -121,185 +159,176 @@ import CoreLocation
 import PDFKit
 import Network
 import Security
-import VisionKit      // Document scanning
-import Vision         // OCR
-import MessageUI      // Email
+import VisionKit          // Document scanning
+import Vision             // OCR
+import MessageUI          // Email
+import MapKit             // Maps
+import AVFoundation       // Camera, Barcode
+import Speech             // Voice input
+import LocalAuthentication // Biometrics
+import WidgetKit          // Widgets
+import Intents            // Siri Shortcuts
 import UniformTypeIdentifiers
 ```
 
-### Setup Steps
+---
 
-1. Create new Xcode project (iOS App, SwiftUI)
-2. Create Core Data model `DigitalFormsApp.xcdatamodeld`
-3. Add entities as documented in `CoreDataModel.md`
-4. Replace generated Swift files with `DigitalFormsApp_Improved.swift`
-5. Add required capabilities in Xcode:
-   - Camera Usage
-   - Photo Library Usage
-   - Location When In Use
-
-### Info.plist Keys Required
+## Info.plist Keys Required
 
 ```xml
 <key>NSCameraUsageDescription</key>
-<string>Camera access is needed to capture photos and scan documents</string>
+<string>Camera for photos, document scanning, and barcode scanning</string>
 <key>NSPhotoLibraryUsageDescription</key>
-<string>Photo library access is needed to attach photos to forms</string>
+<string>Photo library for attaching images to forms</string>
 <key>NSLocationWhenInUseUsageDescription</key>
-<string>Location is captured for audit purposes when creating forms</string>
+<string>Location capture for audit trail</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Microphone for voice-to-text input</string>
+<key>NSSpeechRecognitionUsageDescription</key>
+<string>Speech recognition for hands-free form filling</string>
+<key>NSFaceIDUsageDescription</key>
+<string>Face ID to secure your forms</string>
 ```
 
 ---
 
-## Code Conventions
+## Development Setup
 
-### Swift Style
+### Prerequisites
+- **Xcode**: 15.0+
+- **iOS**: 17.0+
+- **Swift**: 5.9+
+- **Physical Device**: Required for camera, scanner, biometrics
 
-- **Naming**: camelCase for properties/methods, PascalCase for types
-- **MARK Comments**: Organize code sections with `// MARK: -`
-- **Access Control**: Use `private` for internal implementation
-- **Optionals**: Prefer optional binding over force unwrapping
-
-### SwiftUI Patterns
-
-```swift
-// View structure
-struct MyView: View {
-    // State
-    @State private var value = ""
-    @EnvironmentObject var manager: Manager
-
-    // Body
-    var body: some View {
-        // Content
-    }
-
-    // MARK: - Subviews
-    private var subview: some View { ... }
-
-    // MARK: - Actions
-    private func action() { ... }
-}
-```
-
-### Core Data Operations
-
-- Always use `DataController.shared` for operations
-- Call `save()` after modifications
-- Use `@FetchRequest` in views for automatic updates
+### Setup Steps
+1. Create Xcode project (iOS App, SwiftUI, Core Data)
+2. Create `DigitalFormsApp.xcdatamodeld` per `CoreDataModel.md`
+3. Add `DigitalFormsApp_Ultimate.swift` to project
+4. Add all Info.plist privacy keys
+5. Enable capabilities: Push Notifications, Siri
+6. Build and run on physical device
 
 ---
 
-## Common Tasks
+## Testing Checklist
 
-### Add a New Field Type
-
-1. Add case to `FieldType` enum
-2. Add `displayName` and `icon` computed properties
-3. Update `FormFieldView` for input rendering
-4. Update `FieldPreview` for builder preview
-5. Update `PDFGenerator` if special rendering needed
-
-### Add a New Template Category
-
-1. Add to `categories` array in `ImprovedFormBuilderView`
-2. Add to `categories` array in `ScanToFormView`
-3. Update `templateIcon` in `TemplateRowView` if custom icon needed
-
-### Modify PDF Layout
-
-1. Edit `PDFGenerator.generatePDF(for:)` method
-2. Update page dimensions, margins, fonts as needed
-3. Test with forms containing many fields/signatures
-
----
-
-## Testing
-
-### Manual Testing Checklist
-
+### Core Features
 - [ ] Create form from template
-- [ ] Fill all field types
-- [ ] Capture signature
-- [ ] Add photo attachment
-- [ ] Submit form
-- [ ] Export as PDF
-- [ ] Email form
-- [ ] Scan document and create template
-- [ ] Drag-and-drop reorder fields
-- [ ] Offline mode operations
-- [ ] Sync when back online
+- [ ] Fill all 18 field types
+- [ ] Capture signature (drawn, typed, initials)
+- [ ] Add and annotate photo
+- [ ] Submit and approve form
+- [ ] Export and email PDF
 
-### Simulator Limitations
-
-- Camera not available (use photo library)
-- Document scanner not available
-- Email composer may not work
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-| Issue | Solution |
-|-------|----------|
-| Core Data crash on launch | Ensure model name matches container name |
-| PDF generation fails | Check for nil values in form fields |
-| Email not working | Simulator doesn't support email |
-| Scanner not appearing | VisionKit requires physical device |
-| Sync fails | Check network and auth token |
-
-### Debug Tips
-
-- Use `print()` statements in Core Data operations
-- Check Console.app for detailed logs
-- Use Xcode's Core Data debugger
+### Advanced Features
+- [ ] Scan paper document with OCR
+- [ ] Test conditional logic (show/hide)
+- [ ] Use voice input for text fields
+- [ ] Scan barcode/QR code
+- [ ] View dashboard analytics
+- [ ] Test workflow automation
+- [ ] Verify biometric lock
+- [ ] Check auto-save functionality
+- [ ] Test offline mode and sync
 
 ---
 
 ## API Configuration
 
-Update `SyncManager.baseURL` for your backend:
-
 ```swift
+// In SyncManager
 private let baseURL = "https://api.yourbackend.com/v1"
+
+// Endpoints
+POST /forms          // Submit form
+GET  /forms          // List forms
+GET  /templates      // Get templates
+POST /webhooks       // Workflow webhooks
 ```
 
-### Expected Endpoints
+---
 
-- `POST /forms` - Submit form data
-- `GET /templates` - Fetch templates
-- Headers: `Authorization: Bearer <token>`
+## Security Features
+
+| Feature | Implementation |
+|---------|---------------|
+| Auth tokens | Keychain storage |
+| Offline PIN | Hashed storage |
+| Biometric lock | LAContext |
+| Session timeout | Configurable |
+| Audit trail | All actions logged |
 
 ---
 
-## Security Considerations
+## Widget Support
 
-- Auth tokens stored in Keychain
-- Offline PIN hashed before storage
-- No sensitive data in UserDefaults
-- Image data stored in Core Data (consider external storage)
+Home screen widget showing:
+- Pending form count
+- Recent form status
+- Quick actions
+
+## Siri Shortcuts
+
+- "Start safety inspection"
+- "Show pending approvals"
+- "Create new form"
 
 ---
 
-## AI Assistant Guidelines
+## Common Tasks
 
-### When Working on This Repository
+### Add New Field Type
+1. Add case to `FieldType` enum
+2. Add `displayName` and `icon`
+3. Update `FormFieldView` for input
+4. Update `FieldPreview` for builder
+5. Update `PDFGenerator` for export
 
-1. **Read First**: Always read the Swift file before making changes
-2. **Single File**: All code is in one file - maintain this structure
-3. **Core Data**: Don't modify entity names without updating model
-4. **iOS Patterns**: Follow Apple's SwiftUI conventions
-5. **Test on Device**: Many features require physical device
+### Add Workflow Action
+1. Add case to `WorkflowActionType`
+2. Implement in `WorkflowEngine.executeActions()`
+3. Add UI in `AddWorkflowRuleView`
 
-### Things to Avoid
+### Add Dashboard Metric
+1. Add property to `AnalyticsManager`
+2. Calculate in `refreshAnalytics()`
+3. Add card in `DashboardView`
 
-- Breaking Core Data model compatibility
-- Removing required Info.plist keys
-- Force unwrapping optionals without checks
-- Blocking the main thread with heavy operations
-- Storing sensitive data insecurely
+---
+
+## File Comparison
+
+| Feature | Improved | Ultimate |
+|---------|----------|----------|
+| Document Scanner | Yes | Yes |
+| Form Builder | Yes | Yes |
+| PDF Export | Yes | Yes |
+| Email | Yes | Yes |
+| Conditional Logic | No | Yes |
+| Photo Annotation | No | Yes |
+| Voice Input | No | Yes |
+| Barcode Scanner | No | Yes |
+| Dashboard | No | Yes |
+| Workflow | No | Yes |
+| Biometric Lock | No | Yes |
+| Auto-save | No | Yes |
+| Maps | No | Yes |
+| Widgets | No | Yes |
+
+**Recommendation**: Use `DigitalFormsApp_Ultimate.swift` for full functionality.
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Scanner not working | Use physical device |
+| Voice input failing | Check microphone permission |
+| Biometrics unavailable | Device must support Face/Touch ID |
+| Barcode not scanning | Ensure good lighting |
+| Workflow not triggering | Check rule is active |
+| PDF missing content | Check for nil field values |
 
 ---
 
@@ -307,8 +336,9 @@ private let baseURL = "https://api.yourbackend.com/v1"
 
 | Date | Change |
 |------|--------|
-| 2026-02-04 | Initial CLAUDE.md created |
-| 2026-02-04 | Added improved DigitalFormsApp with document scanner, form builder, PDF export, and email |
+| 2026-02-04 | Initial CLAUDE.md |
+| 2026-02-04 | Added improved version with scanner, builder, PDF, email |
+| 2026-02-04 | Added ultimate version with all features |
 
 ---
 
