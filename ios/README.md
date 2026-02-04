@@ -1,65 +1,441 @@
-# DigitalFormsApp iOS
+# DigitalFormsApp iOS - Complete Setup Guide
 
-Professional iOS/iPadOS application for digital form management with legal signatures.
+Professional iOS/iPadOS application for digital form management with legally binding signatures.
 
-## Features
+---
 
-- **Document Scanner** - Scan paper forms with VisionKit OCR
-- **Form Builder** - Drag-and-drop visual form design
-- **18 Field Types** - Text, date, signature, photo, location, and more
-- **Legal Signatures** - Canadian-compliant (PIPEDA) e-signatures
-- **Offline Support** - Full functionality without internet
-- **Cloud Sync** - Automatic sync with Railway backend
-- **PDF Export** - Professional multi-page PDF generation
-- **Dashboard** - Analytics and statistics
+## Table of Contents
 
-## Quick Start
+1. [Prerequisites](#prerequisites)
+2. [Step-by-Step Setup](#step-by-step-setup)
+3. [Core Data Model Setup](#core-data-model-setup)
+4. [Running the App](#running-the-app)
+5. [Apple Developer Account](#apple-developer-account)
+6. [Configuration](#configuration)
+7. [Testing](#testing)
+8. [Troubleshooting](#troubleshooting)
+9. [Deployment](#deployment)
 
-### Option 1: Using xcodegen (Recommended)
+---
+
+## Prerequisites
+
+### Required Software
+
+| Software | Version | How to Install |
+|----------|---------|----------------|
+| macOS | 14.0+ (Sonoma) | System update |
+| Xcode | 15.0+ | Mac App Store |
+| Homebrew | Latest | See below |
+| xcodegen | Latest | `brew install xcodegen` |
+
+### Install Homebrew (if not installed)
 
 ```bash
-# Install xcodegen
-brew install xcodegen
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
-# Generate Xcode project
+### Install xcodegen
+
+```bash
+brew install xcodegen
+```
+
+### Verify Installation
+
+```bash
+xcode-select --version    # Should show xcode-select version
+xcodegen --version        # Should show xcodegen version
+```
+
+---
+
+## Step-by-Step Setup
+
+### Step 1: Navigate to iOS Directory
+
+```bash
+cd /path/to/Inductionform/ios
+```
+
+### Step 2: Create the Core Data Model
+
+**This is the most critical step!** Xcode cannot generate the Core Data model from code alone.
+
+1. Open Xcode
+2. Go to **File → New → File** (or press ⌘N)
+3. Select **Data Model** under Core Data
+4. Name it: `DigitalFormsApp.xcdatamodeld`
+5. Save it in: `ios/DigitalFormsApp/Resources/`
+
+Then create the entities as described in [Core Data Model Setup](#core-data-model-setup) below.
+
+### Step 3: Generate Xcode Project
+
+```bash
 cd ios
 xcodegen generate
+```
 
-# Open project
+You should see:
+```
+Loaded project:
+  Name: DigitalFormsApp
+  Targets:
+    DigitalFormsApp: iOS application
+⚙️  Generating project...
+⚙️  Writing project...
+Created project at /path/to/ios/DigitalFormsApp.xcodeproj
+```
+
+### Step 4: Open in Xcode
+
+```bash
 open DigitalFormsApp.xcodeproj
 ```
 
-### Option 2: Manual Setup
+### Step 5: Select Your Team
 
-1. Open Xcode → Create new iOS App project
-2. Name: `DigitalFormsApp`
-3. Interface: SwiftUI
-4. Storage: Core Data
-5. Copy all files from `DigitalFormsApp/` into the project
-6. Build and run
+1. Click on **DigitalFormsApp** in the project navigator (left sidebar)
+2. Select the **DigitalFormsApp** target
+3. Go to **Signing & Capabilities** tab
+4. Under **Team**, select your Apple Developer account
+5. If you don't have one, select **Personal Team** (free, limited features)
+
+### Step 6: Select a Device/Simulator
+
+1. In the toolbar at the top, click the device dropdown
+2. Choose either:
+   - **iPhone 15 Pro** (Simulator) - for testing without a device
+   - **Your iPhone** - for full feature testing (requires developer account)
+
+### Step 7: Build and Run
+
+Press **⌘R** or click the Play button.
+
+---
+
+## Core Data Model Setup
+
+You must manually create the Core Data model in Xcode. This cannot be automated.
+
+### Open the Data Model Editor
+
+1. In Xcode, navigate to `DigitalFormsApp/Resources/`
+2. Click on `DigitalFormsApp.xcdatamodeld`
+3. You'll see the Core Data model editor
+
+### Create These Entities
+
+#### Entity: FormTemplate
+
+| Attribute | Type | Optional |
+|-----------|------|----------|
+| id | UUID | No |
+| name | String | No |
+| category | String | Yes |
+| descriptionText | String | Yes |
+| fieldsJSON | Binary | Yes |
+| isBuiltIn | Boolean | No |
+| createdAt | Date | No |
+| updatedAt | Date | No |
+
+#### Entity: Form
+
+| Attribute | Type | Optional |
+|-----------|------|----------|
+| id | UUID | No |
+| templateId | UUID | Yes |
+| templateName | String | Yes |
+| title | String | No |
+| status | String | No |
+| fieldsJSON | Binary | Yes |
+| submittedBy | String | Yes |
+| submittedAt | Date | Yes |
+| approvedBy | String | Yes |
+| approvedAt | Date | Yes |
+| rejectedReason | String | Yes |
+| latitude | Double | Yes |
+| longitude | Double | Yes |
+| deviceId | String | Yes |
+| syncStatus | String | No |
+| serverId | String | Yes |
+| createdAt | Date | No |
+| updatedAt | Date | No |
+
+#### Entity: Signature
+
+| Attribute | Type | Optional |
+|-----------|------|----------|
+| id | UUID | No |
+| formId | UUID | No |
+| fieldId | String | No |
+| signatureType | String | No |
+| signatureData | Binary | No |
+| typedName | String | Yes |
+| consentGiven | Boolean | No |
+| consentText | String | Yes |
+| timestamp | Date | No |
+| ipAddress | String | Yes |
+| deviceId | String | Yes |
+| latitude | Double | Yes |
+| longitude | Double | Yes |
+| documentHash | String | Yes |
+| createdAt | Date | No |
+
+#### Entity: PhotoAttachment
+
+| Attribute | Type | Optional |
+|-----------|------|----------|
+| id | UUID | No |
+| formId | UUID | No |
+| fieldId | String | No |
+| imageData | Binary | No |
+| thumbnailData | Binary | Yes |
+| annotationsJSON | Binary | Yes |
+| caption | String | Yes |
+| latitude | Double | Yes |
+| longitude | Double | Yes |
+| createdAt | Date | No |
+
+#### Entity: User
+
+| Attribute | Type | Optional |
+|-----------|------|----------|
+| id | UUID | No |
+| email | String | No |
+| name | String | Yes |
+| role | String | No |
+| companyId | String | Yes |
+| avatarURL | String | Yes |
+| createdAt | Date | No |
+
+### Set Default Values
+
+For Boolean attributes, set default value to `NO` (false).
+For status fields, set default value to `draft`.
+For syncStatus, set default value to `pending`.
+
+### Save the Model
+
+Press **⌘S** to save.
+
+---
+
+## Running the App
+
+### On Simulator (Limited Features)
+
+```bash
+# These features work on simulator:
+✅ Form creation and editing
+✅ Form templates
+✅ Dashboard
+✅ Settings
+✅ Offline storage
+✅ PDF generation (preview only)
+
+# These features require a real device:
+❌ Camera / Photo capture
+❌ Document scanning
+❌ Barcode scanning
+❌ Face ID (use Simulated Face ID)
+❌ Real GPS location
+```
+
+### On Physical Device (Full Features)
+
+1. Connect your iPhone/iPad via USB
+2. Trust your Mac on the device if prompted
+3. Select your device in Xcode's device dropdown
+4. Press **⌘R** to build and run
+5. On first run, go to **Settings → General → Device Management** on your device
+6. Trust your developer certificate
+
+---
+
+## Apple Developer Account
+
+### Free Account (Personal Team)
+
+- Cost: Free
+- Limitations:
+  - Apps expire after 7 days
+  - Can only install on 3 devices
+  - No push notifications
+  - No App Store distribution
+
+### Paid Account ($99/year)
+
+- Required for:
+  - App Store distribution
+  - Push notifications
+  - Longer certificate validity
+  - TestFlight beta testing
+
+### Enroll at:
+https://developer.apple.com/programs/enroll/
+
+---
+
+## Configuration
+
+### Backend URL
+
+Edit `DigitalFormsApp/Services/APIService.swift`:
+
+```swift
+struct APIConfig {
+    #if DEBUG
+    // Local development
+    static let baseURL = "http://localhost:3000/api"
+    #else
+    // Production (your Railway deployment)
+    static let baseURL = "https://your-app.railway.app/api"
+    #endif
+}
+```
+
+### Bundle Identifier
+
+Edit `project.yml` before generating:
+
+```yaml
+PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.digitalforms
+```
+
+Or change it in Xcode after generating the project.
+
+### App Name
+
+Edit `project.yml`:
+
+```yaml
+CFBundleDisplayName: YourAppName
+```
+
+---
+
+## Testing
+
+### Test Accounts
+
+If your backend is running:
+
+```
+Admin: admin@example.com / Admin123!
+User:  user@example.com / User1234!
+```
+
+### Test Scenarios
+
+| Test | Steps |
+|------|-------|
+| Create form | Forms tab → + → Select template → Fill fields → Submit |
+| Scan document | Scanner tab → Scan → Review OCR → Save |
+| Sign form | Open form → Signature field → Draw/Type → Confirm consent |
+| Export PDF | Open form → Share → Export PDF |
+| Offline mode | Enable Airplane mode → Create form → Disable → Check sync |
+
+### Simulator Tips
+
+**Simulate Face ID:**
+1. In Simulator menu: **Features → Face ID → Enrolled**
+2. When prompted: **Features → Face ID → Matching Face**
+
+**Simulate Location:**
+1. In Simulator menu: **Features → Location → Custom Location**
+2. Enter coordinates
+
+**Add Photos to Simulator:**
+1. Drag images from Finder onto Simulator
+2. They'll appear in Photos app
+
+---
+
+## Troubleshooting
+
+### Build Errors
+
+| Error | Solution |
+|-------|----------|
+| "No such module 'SwiftUI'" | Clean build: **Product → Clean Build Folder** (⇧⌘K) |
+| "Signing certificate" error | Select team in Signing & Capabilities |
+| "Core Data model not found" | Create `.xcdatamodeld` file (see Step 2) |
+| "Untrusted Developer" | On device: Settings → General → Device Management |
+
+### Runtime Errors
+
+| Error | Solution |
+|-------|----------|
+| "Failed to load model" | Delete app, reinstall |
+| "Network error" | Check backend URL, verify backend is running |
+| "Camera not available" | Use physical device, not simulator |
+| "Location not available" | Allow location permission, use device for real GPS |
+
+### Common Issues
+
+**App won't install on device:**
+1. Check device is trusted
+2. Check team is selected
+3. Check device is registered with Apple Developer account
+
+**Core Data crashes on launch:**
+1. Delete the app from device/simulator
+2. Clean build folder (⇧⌘K)
+3. Rebuild and run
+
+**Signatures not saving:**
+1. Ensure consent checkbox is tapped
+2. Check Core Data model has Signature entity
+
+---
+
+## Deployment
+
+### TestFlight (Beta Testing)
+
+1. In Xcode: **Product → Archive**
+2. In Organizer: Click **Distribute App**
+3. Select **App Store Connect**
+4. Upload
+5. In App Store Connect: Add testers
+
+### App Store
+
+See `APP_STORE_CHECKLIST.md` in the root directory for full submission checklist.
+
+**Required before submission:**
+- Screenshots for all device sizes
+- App description and keywords
+- Privacy policy URL (use `web/landing/privacy.html`)
+- Support URL
+- App icon (1024x1024)
+
+---
 
 ## Project Structure
 
 ```
 ios/
-├── setup.sh                    # Setup script
+├── setup.sh                    # Quick setup script
 ├── project.yml                 # xcodegen configuration
-├── README.md
+├── README.md                   # This file
 └── DigitalFormsApp/
     ├── App/
-    │   └── DigitalFormsApp.swift      # Main app entry
+    │   └── DigitalFormsApp.swift      # Main app entry point
     ├── Models/
-    │   └── CoreDataModel.swift        # Core Data entities
+    │   └── CoreDataModel.swift        # Core Data helpers
     ├── Managers/
-    │   ├── AuthManager.swift          # Authentication
-    │   ├── DataController.swift       # Core Data
-    │   └── SyncManager.swift          # Cloud sync
+    │   ├── AuthManager.swift          # Authentication & tokens
+    │   ├── DataController.swift       # Core Data stack
+    │   └── SyncManager.swift          # Cloud sync logic
     ├── Services/
     │   └── APIService.swift           # Railway API client
     ├── Views/
     │   ├── Forms/
-    │   │   ├── FormsListView.swift    # Form list
-    │   │   ├── FormEditorView.swift   # Form editor
+    │   │   ├── FormsListView.swift
+    │   │   ├── FormEditorView.swift
     │   │   └── TemplatesListView.swift
     │   ├── Scanner/
     │   │   └── DocumentScannerView.swift
@@ -73,136 +449,92 @@ ios/
     │   └── BuiltInTemplates.swift     # 10 pre-built templates
     └── Resources/
         ├── Info.plist
-        ├── Assets.xcassets
-        └── DigitalFormsApp.xcdatamodeld
+        ├── DigitalFormsApp.entitlements
+        ├── Assets.xcassets/
+        └── DigitalFormsApp.xcdatamodeld  # YOU MUST CREATE THIS
 ```
+
+---
 
 ## Pre-Built Templates
 
-| Template | Category | Fields |
-|----------|----------|--------|
-| Safety Inspection | Safety | 21 |
-| Incident Report | Safety | 23 |
-| Work Order | Maintenance | 17 |
-| Visitor Sign-In | Administration | 15 |
-| Equipment Checklist | Operations | 23 |
-| Time Sheet | HR | 18 |
-| Expense Report | Finance | 15 |
-| Customer Feedback | Customer Service | 14 |
-| Delivery Receipt | Logistics | 19 |
-| Maintenance Request | Facilities | 15 |
+The app includes 10 professional templates:
 
-## Configuration
+| Template | Category | Fields | Use Case |
+|----------|----------|--------|----------|
+| Safety Inspection | Safety | 21 | Daily safety walks |
+| Incident Report | Safety | 23 | Accident documentation |
+| Work Order | Maintenance | 17 | Repair requests |
+| Visitor Sign-In | Administration | 15 | Building access |
+| Equipment Checklist | Operations | 23 | Pre-use inspections |
+| Time Sheet | HR | 18 | Weekly hours |
+| Expense Report | Finance | 15 | Reimbursements |
+| Customer Feedback | Customer Service | 14 | Satisfaction surveys |
+| Delivery Receipt | Logistics | 19 | Proof of delivery |
+| Maintenance Request | Facilities | 15 | Building issues |
 
-### Backend URL
-
-Edit `APIService.swift`:
-
-```swift
-struct APIConfig {
-    #if DEBUG
-    static let baseURL = "http://localhost:3000/api"
-    #else
-    static let baseURL = "https://your-app.railway.app/api"
-    #endif
-}
-```
-
-### Bundle ID
-
-Update in `project.yml` or Xcode:
-
-```yaml
-PRODUCT_BUNDLE_IDENTIFIER: com.yourcompany.digitalforms
-```
-
-## Requirements
-
-- **Xcode**: 15.0+
-- **iOS**: 17.0+
-- **Swift**: 5.9+
-- **Physical Device**: Required for camera, scanner, Face ID
-
-## Capabilities Required
-
-Enable in Xcode → Signing & Capabilities:
-
-- Push Notifications
-- Siri (for Siri Shortcuts)
-
-## Privacy Keys (Info.plist)
-
-| Key | Description |
-|-----|-------------|
-| NSCameraUsageDescription | Photos, scanning, barcodes |
-| NSPhotoLibraryUsageDescription | Image attachments |
-| NSLocationWhenInUseUsageDescription | GPS for audit trail |
-| NSMicrophoneUsageDescription | Voice input |
-| NSSpeechRecognitionUsageDescription | Speech-to-text |
-| NSFaceIDUsageDescription | Biometric security |
+---
 
 ## Legal Signatures
 
-Signatures comply with Canadian law:
+Signatures are legally binding under Canadian law:
 
-- **PIPEDA Part 2** (Federal)
-- **Provincial ETAs** (Ontario, BC, Alberta, etc.)
+- **Federal**: PIPEDA Part 2, Section 31-47
+- **Provincial**: Electronic Transactions Acts (Ontario, BC, Alberta, etc.)
 
-Each signature includes:
-- Consent acknowledgment checkbox
-- SHA-256 document hash
-- Timestamp, IP, device ID, GPS
+Each signature captures:
+- Drawn/typed signature image
+- Explicit consent checkbox + text
+- SHA-256 hash of form content
+- Timestamp (ISO 8601)
+- IP address
+- Device identifier
+- GPS coordinates (if permitted)
 - Optional witness signature
 
-## Offline Mode
+---
 
-The app works fully offline:
+## Quick Reference
 
-1. Forms saved to Core Data
-2. Automatic sync when online
-3. Conflict resolution (server wins)
-4. Pending sync indicator
+### Keyboard Shortcuts (Xcode)
 
-## Testing
+| Shortcut | Action |
+|----------|--------|
+| ⌘R | Run |
+| ⌘B | Build |
+| ⇧⌘K | Clean Build Folder |
+| ⌘. | Stop |
+| ⌘0 | Toggle Navigator |
+| ⌥⌘0 | Toggle Inspector |
 
-### Simulator Limitations
+### Useful Commands
 
-| Feature | Simulator | Device |
-|---------|-----------|--------|
-| Forms | Yes | Yes |
-| Camera | No | Yes |
-| Document Scanner | No | Yes |
-| Face ID | Limited | Yes |
-| GPS | Simulated | Yes |
+```bash
+# Generate project
+xcodegen generate
 
-### Test Accounts
+# Open project
+open DigitalFormsApp.xcodeproj
 
+# Clean derived data (fixes weird issues)
+rm -rf ~/Library/Developer/Xcode/DerivedData
+
+# List simulators
+xcrun simctl list devices
+
+# Boot specific simulator
+xcrun simctl boot "iPhone 15 Pro"
 ```
-Admin: admin@example.com / Admin123!
-User:  user@example.com / User1234!
-```
 
-## Deployment
+---
 
-### TestFlight
+## Support
 
-1. Archive in Xcode
-2. Upload to App Store Connect
-3. Invite testers
+For issues:
+1. Check [Troubleshooting](#troubleshooting) section
+2. Review Xcode console logs
+3. Create issue in repository
 
-### App Store
+---
 
-See `APP_STORE_CHECKLIST.md` in root directory.
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Scanner not working | Use physical device |
-| Core Data errors | Delete app, reinstall |
-| Sync failing | Check network, re-login |
-| Signatures not saving | Check consent checkbox |
-
-## License
-
-MIT
+*Last updated: 2026-02-04*
