@@ -14,7 +14,7 @@ import {
   Printer,
   Mail,
   Edit,
-  Signature,
+  PenLine,
   Camera,
   AlertCircle
 } from 'lucide-react'
@@ -79,7 +79,7 @@ function FormDetail() {
 
   const getFieldIcon = (type) => {
     const icons = {
-      signature: Signature,
+      signature: PenLine,
       photo: Camera,
       location: MapPin,
       date: Calendar,
