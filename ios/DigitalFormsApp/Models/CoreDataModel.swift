@@ -11,6 +11,99 @@
 import Foundation
 import CoreData
 
+// MARK: - FormField Model (used in forms and signatures)
+
+struct FormField: Codable, Identifiable {
+    var id: UUID?
+    var fieldType: String
+    var label: String?
+    var value: String?
+    var placeholder: String?
+    var isRequired: Bool
+    var options: [String]?
+    var order: Int
+
+    init(id: UUID? = UUID(), fieldType: String, label: String? = nil, value: String? = nil, placeholder: String? = nil, isRequired: Bool = false, options: [String]? = nil, order: Int = 0) {
+        self.id = id
+        self.fieldType = fieldType
+        self.label = label
+        self.value = value
+        self.placeholder = placeholder
+        self.isRequired = isRequired
+        self.options = options
+        self.order = order
+    }
+}
+
+// MARK: - FieldType Enum
+
+enum FieldType: String, Codable, CaseIterable {
+    case text
+    case textarea
+    case number
+    case email
+    case phone
+    case date
+    case time
+    case checkbox
+    case yesNo
+    case dropdown
+    case multiSelect
+    case signature
+    case photo
+    case location
+    case currency
+    case rating
+    case slider
+    case section
+
+    var displayName: String {
+        switch self {
+        case .text: return "Text"
+        case .textarea: return "Text Area"
+        case .number: return "Number"
+        case .email: return "Email"
+        case .phone: return "Phone"
+        case .date: return "Date"
+        case .time: return "Time"
+        case .checkbox: return "Checkbox"
+        case .yesNo: return "Yes/No"
+        case .dropdown: return "Dropdown"
+        case .multiSelect: return "Multi-Select"
+        case .signature: return "Signature"
+        case .photo: return "Photo"
+        case .location: return "Location"
+        case .currency: return "Currency"
+        case .rating: return "Rating"
+        case .slider: return "Slider"
+        case .section: return "Section"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .text: return "textformat"
+        case .textarea: return "text.alignleft"
+        case .number: return "number"
+        case .email: return "envelope"
+        case .phone: return "phone"
+        case .date: return "calendar"
+        case .time: return "clock"
+        case .checkbox: return "checkmark.square"
+        case .yesNo: return "hand.thumbsup"
+        case .dropdown: return "list.bullet"
+        case .multiSelect: return "checklist"
+        case .signature: return "signature"
+        case .photo: return "camera"
+        case .location: return "location"
+        case .currency: return "dollarsign.circle"
+        case .rating: return "star"
+        case .slider: return "slider.horizontal.3"
+        case .section: return "rectangle.split.3x1"
+        }
+    }
+}
+
 // MARK: - LocalForm Entity
 
 @objc(LocalForm)
