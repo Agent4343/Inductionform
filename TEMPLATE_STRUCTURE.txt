@@ -1,0 +1,129 @@
+OFFSHORE INDUCTION FORM - HEBRON PLATFORM
+Template Structure Overview
+================================================================================
+
+Form ID: CANE-EC-OFPRO-01-005-4008-00 | 04
+Category: Safety
+Template ID: offshore-induction-hebron
+
+FIELD BREAKDOWN:
+================================================================================
+
+HEADER SECTION (3 fields)
+├── Form ID (text field)
+├── Instructions (section header)
+└── Instructions Text (textarea)
+
+SECTION 1: GENERAL ORIENTATION (32 fields)
+├── Section Header "General Orientation (0/31 checked)"
+└── 31 Checkboxes:
+    ├── Muster Stations (4 items)
+    │   ├── ☐ Location of Muster Station 1 (Galley - LQ Level 2)
+    │   ├── ☐ Location of Muster Station 2 (Galley - LQ Level 2)
+    │   ├── ☐ Location of Muster Station 3 (Recreation Area - LQ Level 2)
+    │   └── ☐ Location of Muster Station 4 (Fitness Area LQ Level 1)
+    ├── Emergency Equipment (2 items)
+    │   ├── ☐ Location of Lifeboats and Escape Chute Evacuation Systems
+    │   └── ☐ Location of abandonment suits, life jackets and smoke hoods
+    ├── Facility Tour (5 items)
+    │   ├── ☐ LQ Level 1 (Laundry, Locker Rooms, Games Room, Fitness Room)
+    │   ├── ☐ LQ Level 2 (Galley, Kiosk, Recreation Areas, etc.)
+    │   ├── ☐ UPM LSM (Production Offices, CCR, ECC, etc.)
+    │   ├── ☐ Quiet Rooms LQ Levels 3 & 4
+    │   └── ☐ Quiet zones designation
+    ├── Additional Facilities (2 items)
+    │   ├── ☐ LQ Level 5 (Heli Admin, Medic's Office, Sickbay)
+    │   └── ☐ UPM UD (Drilling Offices, Conference Room)
+    ├── Emergency Procedures (8 items)
+    │   ├── ☐ GPA or H2S alarm response
+    │   ├── ☐ PAPA alarm response
+    │   ├── ☐ PA system instructions
+    │   ├── ☐ Muster drill schedule
+    │   ├── ☐ Emergency telephone numbers (333)
+    │   ├── ☐ Platform Station Bill
+    │   ├── ☐ Alternate muster station
+    │   └── ☐ Door closure procedures
+    └── Platform Rules (10 items)
+        ├── ☐ Hearing conservation - Double protection areas
+        ├── ☐ Green Hard Hat issuance and policy
+        ├── ☐ Hearing Protection Areas
+        ├── ☐ Bunk assignment (A&B)
+        ├── ☐ Jewelry prohibition
+        ├── ☐ Galley restrictions (no backpacks, PPE, shorts)
+        ├── ☐ Footwear rules (no open-toed shoes)
+        ├── ☐ Dietary restrictions notification
+        ├── ☐ Bunk location
+        └── ☐ Introductions to OIM and SSH&E Lead
+
+SECTION 2: SAFETY OVERVIEW (4 fields)
+├── Section Header "Safety Overview (0/3 checked)"
+└── 3 Checkboxes:
+    ├── ☐ Hazard I.D. and personal safety (Refer to SHE Handbook)
+    ├── ☐ Right to Work Safety Explained
+    └── ☐ Process safety & PSMS overview
+
+SECTION 3: DETAILED SAFETY TRAINING (17 fields)
+├── Section Header "Detailed Safety Training (0/16 checked)"
+└── 16 Checkboxes:
+    ├── ☐ Incident and Injury Reporting / Near Miss / Haz. I.D.
+    ├── ☐ Environmental / Sheen Reporting / Sea Bird Handling
+    ├── ☐ Waste Management / Control Procedures
+    ├── ☐ Location of Acts and Regulations
+    ├── ☐ Emergency Response Duties
+    ├── ☐ Overview of Platform Safety Systems
+    ├── ☐ Role in Process Safety & Role Card
+    ├── ☐ Manual call point/ESD button function
+    ├── ☐ Hazardous Materials (NORM, Pyrophoric Scale, Chemicals)
+    ├── ☐ Workplace Committee Overview
+    ├── ☐ Hebron Employee Relations Committee (HERC)
+    ├── ☐ Electrical/Instrumentation room access restrictions
+    ├── ☐ Use of Non-IS Equipment
+    ├── ☐ PPE brought onboard checks
+    ├── ☐ PPE wearing requirements
+    └── ☐ Computer Usage Policies
+
+SECTION 4: WORK MANAGEMENT SYSTEM (4 fields)
+├── Section Header "Work Management System (0/3 checked)"
+└── 3 Checkboxes:
+    ├── ☐ Overview of WMS and PSMS
+    ├── ☐ Review the "Control and use of Knives" Procedure
+    └── ☐ Introduction to co-workers and Mentor appointment
+
+SECTION 5: INDUCTEE ACKNOWLEDGEMENT (5 fields)
+├── Section Header "Inductee Acknowledgement"
+├── Name (Print) * Required [text field]
+├── Company * Required [text field]
+├── Date * Required [date picker]
+└── Inductee Signature * Required [signature pad]
+
+SECTION 6: SUPERVISOR CONFIRMATION (5 fields)
+├── Section Header "Supervisor Confirmation"
+├── Offshore Team [text field] (e.g. Team A, Team B)
+├── Responsible Supervisor * Required [text field]
+├── Presenter / Mentor [text field]
+└── Supervisor Signature * Required [signature pad]
+
+================================================================================
+TOTAL FIELD COUNT: 66 fields
+  - Section Headers: 7
+  - Checkboxes: 53
+  - Text Fields: 4
+  - Date Fields: 1
+  - Signature Fields: 2
+  
+REQUIRED FIELDS: 6
+  - Inductee Name
+  - Company
+  - Date
+  - Inductee Signature
+  - Responsible Supervisor
+  - Supervisor Signature
+
+COMPLETION TRACKING:
+  - General Orientation: 0/31 items
+  - Safety Overview: 0/3 items
+  - Detailed Safety Training: 0/16 items
+  - Work Management System: 0/3 items
+  - Total: 0/53 items (0%)
+
+================================================================================
