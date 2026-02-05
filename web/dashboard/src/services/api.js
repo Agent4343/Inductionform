@@ -245,11 +245,61 @@ export const demoData = {
     },
   ],
   templates: [
-    { id: '1', name: 'Safety Inspection', category: 'Safety', fieldCount: 21 },
-    { id: '2', name: 'Incident Report', category: 'Safety', fieldCount: 23 },
-    { id: '3', name: 'Work Order', category: 'Maintenance', fieldCount: 17 },
-    { id: '4', name: 'Visitor Sign-In', category: 'Administration', fieldCount: 15 },
-    { id: '5', name: 'Equipment Checklist', category: 'Operations', fieldCount: 23 },
-    { id: '6', name: 'Time Sheet', category: 'HR', fieldCount: 18 },
+    { 
+      id: 'daily-safety-inspection', 
+      name: 'Daily Safety Inspection', 
+      category: 'safety', 
+      fieldCount: 30,
+      description: 'Comprehensive daily safety inspection checklist',
+      estimatedTime: '5-10 min'
+    },
+    { 
+      id: 'incident-report', 
+      name: 'Incident / Accident Report', 
+      category: 'safety', 
+      fieldCount: 30,
+      description: 'Detailed incident and accident reporting form',
+      estimatedTime: '10-15 min'
+    },
+    { 
+      id: 'equipment-checklist', 
+      name: 'Equipment Pre-Use Checklist', 
+      category: 'operations', 
+      fieldCount: 30,
+      description: 'Pre-operational equipment safety checklist',
+      estimatedTime: '5 min'
+    },
+    { 
+      id: 'hot-work-permit', 
+      name: 'Hot Work Permit', 
+      category: 'permits', 
+      fieldCount: 26,
+      description: 'Hot work authorization and safety permit',
+      estimatedTime: '10 min'
+    },
+    { 
+      id: 'delivery-receipt', 
+      name: 'Delivery Receipt', 
+      category: 'logistics', 
+      fieldCount: 21,
+      description: 'Goods delivery verification and sign-off',
+      estimatedTime: '5 min'
+    },
+    { 
+      id: 'toolbox-talk', 
+      name: 'Toolbox Talk / Safety Meeting', 
+      category: 'safety', 
+      fieldCount: 15,
+      description: 'Safety meeting attendance and topic discussion',
+      estimatedTime: '5 min'
+    },
+    { 
+      id: 'offshore-induction-hebron', 
+      name: 'Offshore Induction Form - Hebron Platform', 
+      category: 'safety', 
+      fieldCount: 70,
+      description: 'Hebron Platform - Green Hat Program (CANE-EC-OFPRO-01-005-4008-00 | 04)',
+      estimatedTime: '20-30 min'
+    },
   ],
 }
