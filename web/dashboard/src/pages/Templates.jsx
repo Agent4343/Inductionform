@@ -199,9 +199,12 @@ function Templates() {
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-gray-100">
-                  <button className="text-primary-500 hover:text-primary-600 text-sm font-medium">
+                  <Link
+                    to={`/templates/${template.id}`}
+                    className="text-primary-500 hover:text-primary-600 text-sm font-medium"
+                  >
                     View Template →
-                  </button>
+                  </Link>
                 </div>
               </div>
             )
@@ -248,9 +251,12 @@ function Templates() {
                     </span>
                   </div>
 
-                  <button className="text-primary-500 hover:text-primary-600 text-sm font-medium whitespace-nowrap">
+                  <Link
+                    to={`/templates/${template.id}`}
+                    className="text-primary-500 hover:text-primary-600 text-sm font-medium whitespace-nowrap"
+                  >
                     View →
-                  </button>
+                  </Link>
                 </div>
               )
             })}
