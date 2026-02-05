@@ -11,14 +11,16 @@ struct FieldTemplatePresets {
     
     // MARK: - Personal Information
     
-    static let personalInformation: [FieldDefinition] = [
-        FieldDefinition(id: UUID().uuidString, type: "section", label: "Personal Information"),
-        FieldDefinition(id: UUID().uuidString, type: "text", label: "First Name", required: true, placeholder: "Enter first name"),
-        FieldDefinition(id: UUID().uuidString, type: "text", label: "Last Name", required: true, placeholder: "Enter last name"),
-        FieldDefinition(id: UUID().uuidString, type: "email", label: "Email Address", required: true, placeholder: "name@example.com"),
-        FieldDefinition(id: UUID().uuidString, type: "phone", label: "Phone Number", required: true, placeholder: "(555) 123-4567"),
-        FieldDefinition(id: UUID().uuidString, type: "date", label: "Date of Birth")
-    ]
+    static var personalInformation: [FieldDefinition] {
+        [
+            FieldDefinition(id: UUID().uuidString, type: "section", label: "Personal Information"),
+            FieldDefinition(id: UUID().uuidString, type: "text", label: "First Name", required: true, placeholder: "Enter first name"),
+            FieldDefinition(id: UUID().uuidString, type: "text", label: "Last Name", required: true, placeholder: "Enter last name"),
+            FieldDefinition(id: UUID().uuidString, type: "email", label: "Email Address", required: true, placeholder: "name@example.com"),
+            FieldDefinition(id: UUID().uuidString, type: "phone", label: "Phone Number", required: true, placeholder: "(555) 123-4567"),
+            FieldDefinition(id: UUID().uuidString, type: "date", label: "Date of Birth")
+        ]
+    }
     
     // MARK: - Address Block
     

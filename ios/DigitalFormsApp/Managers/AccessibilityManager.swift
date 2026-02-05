@@ -116,8 +116,9 @@ class AccessibilityManager: ObservableObject {
     // MARK: - Color Scheme
     
     func applyColorScheme() {
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-            windowScene.windows.forEach { window in
+        for scene in UIApplication.shared.connectedScenes {
+            guard let windowScene = scene as? UIWindowScene else { continue }
+            for window in windowScene.windows {
                 window.overrideUserInterfaceStyle = isDarkModeEnabled ? .dark : .light
             }
         }

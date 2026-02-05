@@ -183,10 +183,13 @@ class ValidationEngine {
     }
     
     private func validateURL(_ value: String, message: String) -> ValidationResult {
-        if let url = URL(string: value), UIApplication.shared.canOpenURL(url) {
-            return ValidationResult(isValid: true, errors: [])
+        guard let components = URLComponents(string: value),
+              let scheme = components.scheme,
+              ["http", "https"].contains(scheme.lowercased()),
+              components.host != nil else {
+            return ValidationResult(isValid: false, errors: [message])
         }
-        return ValidationResult(isValid: false, errors: [message])
+        return ValidationResult(isValid: true, errors: [])
     }
     
     private func validateAlphanumeric(_ value: String, message: String) -> ValidationResult {

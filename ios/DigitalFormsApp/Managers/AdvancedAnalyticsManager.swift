@@ -206,7 +206,7 @@ class AdvancedAnalyticsManager: ObservableObject {
         )
     }
     
-    func getIncompleteForms() -> [IncompletFormInfo] {
+    func getIncompleteForms() -> [IncompleteFormInfo] {
         let incompleteForms = formAnalytics.values.filter {
             $0.status == .inProgress || $0.status == .abandoned
         }
@@ -215,7 +215,7 @@ class AdvancedAnalyticsManager: ObservableObject {
             let progress = calculateProgress(analytics)
             let timeSpent = analytics.fieldInteractions.reduce(0) { $0 + $1.timeSpent }
             
-            return IncompletFormInfo(
+            return IncompleteFormInfo(
                 formId: analytics.formId,
                 formTitle: analytics.formTitle,
                 status: analytics.status,
@@ -364,7 +364,7 @@ struct CompletionTimeReport {
     }
 }
 
-struct IncompletFormInfo: Identifiable {
+struct IncompleteFormInfo: Identifiable {
     let id = UUID()
     let formId: UUID
     let formTitle: String

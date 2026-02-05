@@ -27,15 +27,16 @@ struct FormBuilderView: View {
     
     var body: some View {
         NavigationStack {
-            HSplitView {
+            HStack(spacing: 0) {
                 // Left Panel: Builder
                 builderPanel
-                    .frame(minWidth: 300, idealWidth: 400)
+                    .frame(maxWidth: showingPreview ? .infinity : nil)
                 
                 // Right Panel: Preview
                 if showingPreview {
+                    Divider()
                     previewPanel
-                        .frame(minWidth: 300, idealWidth: 400)
+                        .frame(maxWidth: .infinity)
                 }
             }
             .navigationTitle("Form Builder")
@@ -46,7 +47,7 @@ struct FormBuilderView: View {
                 }
                 
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Save Template") {
+                    Button("Save Form") {
                         saveTemplate()
                     }
                     .disabled(formTitle.isEmpty || fields.isEmpty)
