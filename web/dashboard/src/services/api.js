@@ -5,13 +5,23 @@ const API_BASE = import.meta.env.VITE_API_URL || '/api'
 class ApiService {
   constructor() {
     this.token = null
+    this.demoMode = false
   }
 
   setToken(token) {
     this.token = token
   }
 
+  setDemoMode(isDemoMode) {
+    this.demoMode = isDemoMode
+  }
+
   async request(endpoint, options = {}) {
+    // In demo mode, don't make real API calls
+    if (this.demoMode) {
+      throw new Error('Demo mode - API calls disabled')
+    }
+
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -87,15 +97,28 @@ class ApiService {
 
   // Forms
   async getForms(params = {}) {
+    if (this.demoMode) {
+      // Return demo forms
+      return { forms: demoData.forms, total: demoData.forms.length }
+    }
     const query = new URLSearchParams(params).toString()
     return this.request(`/forms${query ? `?${query}` : ''}`)
   }
 
   async getForm(id) {
+    if (this.demoMode) {
+      const form = demoData.forms.find(f => f.id === id)
+      if (!form) throw new Error('Form not found')
+      return form
+    }
     return this.request(`/forms/${id}`)
   }
 
   async createForm(data) {
+    if (this.demoMode) {
+      // Simulate creating a form
+      return { id: 'demo-' + Date.now(), ...data, status: 'draft' }
+    }
     return this.request('/forms', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -103,6 +126,9 @@ class ApiService {
   }
 
   async updateForm(id, data) {
+    if (this.demoMode) {
+      return { id, ...data }
+    }
     return this.request(`/forms/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -110,14 +136,23 @@ class ApiService {
   }
 
   async deleteForm(id) {
+    if (this.demoMode) {
+      return { success: true }
+    }
     return this.request(`/forms/${id}`, { method: 'DELETE' })
   }
 
   async submitForm(id) {
+    if (this.demoMode) {
+      return { id, status: 'submitted' }
+    }
     return this.request(`/forms/${id}/submit`, { method: 'POST' })
   }
 
   async approveForm(id, comments) {
+    if (this.demoMode) {
+      return { id, status: 'approved', comments }
+    }
     return this.request(`/forms/${id}/approve`, {
       method: 'POST',
       body: JSON.stringify({ comments }),
@@ -125,6 +160,9 @@ class ApiService {
   }
 
   async rejectForm(id, reason) {
+    if (this.demoMode) {
+      return { id, status: 'rejected', reason }
+    }
     return this.request(`/forms/${id}/reject`, {
       method: 'POST',
       body: JSON.stringify({ reason }),
@@ -133,15 +171,27 @@ class ApiService {
 
   // Templates
   async getTemplates(params = {}) {
+    if (this.demoMode) {
+      // Return demo templates
+      return { templates: demoData.templates }
+    }
     const query = new URLSearchParams(params).toString()
     return this.request(`/templates${query ? `?${query}` : ''}`)
   }
 
   async getTemplate(id) {
+    if (this.demoMode) {
+      const template = demoData.templates.find(t => t.id === id)
+      if (!template) throw new Error('Template not found')
+      return template
+    }
     return this.request(`/templates/${id}`)
   }
 
   async createTemplate(data) {
+    if (this.demoMode) {
+      return { id: 'demo-template-' + Date.now(), ...data }
+    }
     return this.request('/templates', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -150,10 +200,21 @@ class ApiService {
 
   // User
   async getProfile() {
+    if (this.demoMode) {
+      return {
+        id: 'demo-user',
+        name: 'Demo User',
+        email: 'demo@example.com',
+        role: 'admin'
+      }
+    }
     return this.request('/users/me')
   }
 
   async updateProfile(data) {
+    if (this.demoMode) {
+      return { ...data }
+    }
     return this.request('/users/me', {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -161,11 +222,26 @@ class ApiService {
   }
 
   async getNotifications() {
+    if (this.demoMode) {
+      return []
+    }
     return this.request('/users/me/notifications')
   }
 
   // Stats/Dashboard
   async getStats() {
+    if (this.demoMode) {
+      // Return demo stats
+      return {
+        totalForms: 47,
+        completedForms: 32,
+        pendingForms: 12,
+        requiresAction: 3,
+        weeklySubmissions: 15,
+        weeklyApprovals: 11,
+        activeUsers: 8
+      }
+    }
     try {
       return await this.request('/stats')
     } catch {
@@ -183,6 +259,9 @@ class ApiService {
   }
 
   async updateFormStatus(id, status, reason = null) {
+    if (this.demoMode) {
+      return { id, status, reason }
+    }
     return this.request(`/forms/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status, reason }),

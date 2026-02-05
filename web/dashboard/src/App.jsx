@@ -18,15 +18,21 @@ export const useAuth = () => useContext(AuthContext)
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isDemoMode, setIsDemoMode] = useState(false)
 
   useEffect(() => {
     // Check for stored token
     const token = localStorage.getItem('accessToken')
     const storedUser = localStorage.getItem('user')
+    const demoMode = localStorage.getItem('demoMode') === 'true'
 
-    if (token && storedUser) {
+    if (storedUser) {
       setUser(JSON.parse(storedUser))
-      api.setToken(token)
+      if (token && !demoMode) {
+        api.setToken(token)
+      }
+      setIsDemoMode(demoMode)
+      api.setDemoMode(demoMode)
     }
     setLoading(false)
   }, [])
@@ -36,8 +42,11 @@ function AuthProvider({ children }) {
     localStorage.setItem('accessToken', response.accessToken)
     localStorage.setItem('refreshToken', response.refreshToken)
     localStorage.setItem('user', JSON.stringify(response.user))
+    localStorage.setItem('demoMode', 'false')
     api.setToken(response.accessToken)
+    api.setDemoMode(false)
     setUser(response.user)
+    setIsDemoMode(false)
     return response
   }
 
@@ -45,8 +54,11 @@ function AuthProvider({ children }) {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('user')
+    localStorage.removeItem('demoMode')
     api.setToken(null)
+    api.setDemoMode(false)
     setUser(null)
+    setIsDemoMode(false)
   }
 
   // Demo login for testing
@@ -58,11 +70,14 @@ function AuthProvider({ children }) {
       role: 'admin'
     }
     localStorage.setItem('user', JSON.stringify(demoUser))
+    localStorage.setItem('demoMode', 'true')
+    api.setDemoMode(true)
     setUser(demoUser)
+    setIsDemoMode(true)
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, loginDemo }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, loginDemo, isDemoMode }}>
       {children}
     </AuthContext.Provider>
   )
