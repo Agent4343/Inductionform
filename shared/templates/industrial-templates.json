@@ -952,6 +952,436 @@
           "required": true
         }
       ]
+    },
+    {
+      "id": "offshore-induction-hebron",
+      "name": "Offshore Induction Form - Hebron Platform",
+      "category": "Safety",
+      "description": "Hebron Platform - Green Hat Program (CANE-EC-OFPRO-01-005-4008-00 | 04)",
+      "estimatedTime": "20-30 min",
+      "version": "1.0",
+      "fields": [
+        {
+          "id": "form-id",
+          "type": "text",
+          "label": "Form ID",
+          "required": false,
+          "placeholder": "CANE-EC-OFPRO-01-005-4008-00 | 04"
+        },
+        {
+          "id": "instructions",
+          "type": "section",
+          "label": "Instructions"
+        },
+        {
+          "id": "instructions-text",
+          "type": "textarea",
+          "label": "Instructions",
+          "required": false,
+          "placeholder": "Form provided to Responsible Supervisor - Copy to be provided to the Onshore Training Administrator via SSH&E Lead. All items to be completed by Heli-admin for all regular employees, vendors and visitors."
+        },
+        {
+          "id": "section-orientation",
+          "type": "section",
+          "label": "General Orientation (0/31 checked)"
+        },
+        {
+          "id": "muster-station-1",
+          "type": "checkbox",
+          "label": "Location of Muster Station 1 (Galley - LQ Level 2)",
+          "required": false
+        },
+        {
+          "id": "muster-station-2",
+          "type": "checkbox",
+          "label": "Location of Muster Station 2 (Galley - LQ Level 2)",
+          "required": false
+        },
+        {
+          "id": "muster-station-3",
+          "type": "checkbox",
+          "label": "Location of Muster Station 3 (Recreation Area - LQ Level 2)",
+          "required": false
+        },
+        {
+          "id": "muster-station-4",
+          "type": "checkbox",
+          "label": "Location of Muster Station 4 (Fitness Area LQ Level 1)",
+          "required": false
+        },
+        {
+          "id": "lifeboats-escape",
+          "type": "checkbox",
+          "label": "Location of Lifeboats and Escape Chute Evacuation Systems",
+          "required": false
+        },
+        {
+          "id": "abandonment-equipment",
+          "type": "checkbox",
+          "label": "Location of abandonment suits, life jackets and smoke hoods",
+          "required": false
+        },
+        {
+          "id": "lq-level-1",
+          "type": "checkbox",
+          "label": "LQ Level 1 (Laundry, Locker Rooms, Games Room, Fitness Room)",
+          "required": false
+        },
+        {
+          "id": "lq-level-2",
+          "type": "checkbox",
+          "label": "LQ Level 2 (Galley, Kiosk, Recreation Areas, Conference Room, Phone Booths, Coffee Room, Music Room, Hobby Room, Internet, Clnk, LQ Staff Locker rooms)",
+          "required": false
+        },
+        {
+          "id": "upm-lsm",
+          "type": "checkbox",
+          "label": "UPM LSM (Production Offices, CCR, ECC, Permit Office, Doc Control, Conference Room, Radio Room)",
+          "required": false
+        },
+        {
+          "id": "quiet-rooms",
+          "type": "checkbox",
+          "label": "Quiet Rooms LQ Levels 3 & 4",
+          "required": false
+        },
+        {
+          "id": "quiet-zones",
+          "type": "checkbox",
+          "label": "LQ Levels 3, 4 & 5 are cabin areas which are designated quiet zones",
+          "required": false
+        },
+        {
+          "id": "lq-level-5",
+          "type": "checkbox",
+          "label": "LQ Level 5 (Heli Admin, Medic's Office, Sickbay, Mental Health Room)",
+          "required": false
+        },
+        {
+          "id": "upm-ud",
+          "type": "checkbox",
+          "label": "UPM UD (Drilling Offices, Conference Room, Break Room)",
+          "required": false
+        },
+        {
+          "id": "gpa-alarm",
+          "type": "checkbox",
+          "label": "On General Platform Alarm (GPA) or H2S alarm, go to your Muster Station",
+          "required": false
+        },
+        {
+          "id": "papa-alarm",
+          "type": "checkbox",
+          "label": "On prepare to Abandon Platform Alarm (PAPA), go to your Lifeboat Station",
+          "required": false
+        },
+        {
+          "id": "pa-directions",
+          "type": "checkbox",
+          "label": "Always listen to the PA and follow directions during an emergency",
+          "required": false
+        },
+        {
+          "id": "muster-drill",
+          "type": "checkbox",
+          "label": "Muster Drill once per week",
+          "required": false
+        },
+        {
+          "id": "emergency-numbers",
+          "type": "checkbox",
+          "label": "Informed of Emergency Platform telephone numbers (333)",
+          "required": false
+        },
+        {
+          "id": "station-bill",
+          "type": "checkbox",
+          "label": "Familiarized with Platform Station Bill",
+          "required": false
+        },
+        {
+          "id": "alternate-muster",
+          "type": "checkbox",
+          "label": "Persons alternate muster station is their assigned lifeboat",
+          "required": false
+        },
+        {
+          "id": "door-closure",
+          "type": "checkbox",
+          "label": "Ensure that external and stairwell doors remain closed (Area pressurization)",
+          "required": false
+        },
+        {
+          "id": "hearing-conservation-double",
+          "type": "checkbox",
+          "label": "Hearing conservation - Double hearing protection areas",
+          "required": false
+        },
+        {
+          "id": "green-hard-hat",
+          "type": "checkbox",
+          "label": "Issued Green Hard Hat & explanation of Green Hat policy",
+          "required": false
+        },
+        {
+          "id": "hearing-protection-areas",
+          "type": "checkbox",
+          "label": "Hearing Conservation - Double hearing Protection Areas",
+          "required": false
+        },
+        {
+          "id": "bunk-assignment",
+          "type": "checkbox",
+          "label": "Indicate the bunk assignment and location A&B bunk",
+          "required": false
+        },
+        {
+          "id": "jewelry-prohibited",
+          "type": "checkbox",
+          "label": "Wearing of personal jewelry while on shift is prohibited",
+          "required": false
+        },
+        {
+          "id": "galley-restrictions",
+          "type": "checkbox",
+          "label": "No Backpacks, PPE or shorts permitted in the Galley or TV room",
+          "required": false
+        },
+        {
+          "id": "footwear-rules",
+          "type": "checkbox",
+          "label": "No open toed shoes or sandals are permitted to be worn outside a person's room",
+          "required": false
+        },
+        {
+          "id": "dietary-restrictions",
+          "type": "checkbox",
+          "label": "Please inform the Chef of any dietary restrictions or allergies",
+          "required": false
+        },
+        {
+          "id": "bunk-location",
+          "type": "checkbox",
+          "label": "Indicate the bunk assignment and location of A & B bunk",
+          "required": false
+        },
+        {
+          "id": "introductions",
+          "type": "checkbox",
+          "label": "Introduce new personnel to OIM and SSH&E Lead",
+          "required": false
+        },
+        {
+          "id": "section-safety-overview",
+          "type": "section",
+          "label": "Safety Overview (0/3 checked)"
+        },
+        {
+          "id": "hazard-id",
+          "type": "checkbox",
+          "label": "Hazard I.D. and personal safety (Refer to SHE Handbook)",
+          "required": false
+        },
+        {
+          "id": "right-to-work",
+          "type": "checkbox",
+          "label": "Right to Work Safety Explained",
+          "required": false
+        },
+        {
+          "id": "process-safety",
+          "type": "checkbox",
+          "label": "Process safety & PSMS overview",
+          "required": false
+        },
+        {
+          "id": "section-safety-training",
+          "type": "section",
+          "label": "Detailed Safety Training (0/16 checked)"
+        },
+        {
+          "id": "incident-reporting",
+          "type": "checkbox",
+          "label": "Incident and Injury Reporting / Near Miss / Haz. I.D. / Learning from Incidents",
+          "required": false
+        },
+        {
+          "id": "environmental-reporting",
+          "type": "checkbox",
+          "label": "Environmental / Sheen Reporting / Sea Bird Handling",
+          "required": false
+        },
+        {
+          "id": "waste-management",
+          "type": "checkbox",
+          "label": "Waste Management / Control Procedures (Recycling, waste segregation, Batteries)",
+          "required": false
+        },
+        {
+          "id": "regulations",
+          "type": "checkbox",
+          "label": "Location of Acts and Regulations and Regulatory Training (as required)",
+          "required": false
+        },
+        {
+          "id": "emergency-duties",
+          "type": "checkbox",
+          "label": "Emergency Response Duties (as required)",
+          "required": false
+        },
+        {
+          "id": "safety-systems",
+          "type": "checkbox",
+          "label": "Overview of Platform Safety Systems",
+          "required": false
+        },
+        {
+          "id": "process-safety-role",
+          "type": "checkbox",
+          "label": "Explanation of Role in Process Safety, Managing Safeguards & Role Card",
+          "required": false
+        },
+        {
+          "id": "manual-call-point",
+          "type": "checkbox",
+          "label": "Explain Manual call point/ESD button function (do not tamper with button or remove flag)",
+          "required": false
+        },
+        {
+          "id": "hazardous-materials",
+          "type": "checkbox",
+          "label": "Hazardous Materials (NORM, Pyrophoric Scale, Chemicals) PSIMS",
+          "required": false
+        },
+        {
+          "id": "workplace-committee",
+          "type": "checkbox",
+          "label": "Workplace Committee Overview & Introduction to team Safety Representative",
+          "required": false
+        },
+        {
+          "id": "herc",
+          "type": "checkbox",
+          "label": "Hebron Employee Relations Committee (HERC)",
+          "required": false
+        },
+        {
+          "id": "electrical-access",
+          "type": "checkbox",
+          "label": "Access to electrical rooms (LER) and instrumentation rooms (LIR) are restricted",
+          "required": false
+        },
+        {
+          "id": "non-is-equipment",
+          "type": "checkbox",
+          "label": "Use of Non-IS Equipment (i.e., Laptop Computer batteries)",
+          "required": false
+        },
+        {
+          "id": "ppe-check",
+          "type": "checkbox",
+          "label": "PPE brought onboard is checked & meets required standards",
+          "required": false
+        },
+        {
+          "id": "ppe-requirements",
+          "type": "checkbox",
+          "label": "Requirements for wearing of PPE is explained and understood",
+          "required": false
+        },
+        {
+          "id": "computer-policies",
+          "type": "checkbox",
+          "label": "Computer Usage Policies",
+          "required": false
+        },
+        {
+          "id": "section-wms",
+          "type": "section",
+          "label": "Work Management System (0/3 checked)"
+        },
+        {
+          "id": "wms-overview",
+          "type": "checkbox",
+          "label": "Overview of WMS and PSMS",
+          "required": false
+        },
+        {
+          "id": "knives-procedure",
+          "type": "checkbox",
+          "label": "Review the \"Control and use of Knives\" Procedure",
+          "required": false
+        },
+        {
+          "id": "mentor-appointment",
+          "type": "checkbox",
+          "label": "Introduction to co-workers, and Supervisor has appointed competent person to Mentor for all activities outside of the Living Quarters",
+          "required": false
+        },
+        {
+          "id": "section-inductee",
+          "type": "section",
+          "label": "Inductee Acknowledgement"
+        },
+        {
+          "id": "inductee-name",
+          "type": "text",
+          "label": "Name (Print)",
+          "required": true,
+          "placeholder": "Full name"
+        },
+        {
+          "id": "inductee-company",
+          "type": "text",
+          "label": "Company",
+          "required": true,
+          "placeholder": "Company name"
+        },
+        {
+          "id": "inductee-date",
+          "type": "date",
+          "label": "Date",
+          "required": true
+        },
+        {
+          "id": "inductee-signature",
+          "type": "signature",
+          "label": "Inductee Signature",
+          "required": true
+        },
+        {
+          "id": "section-supervisor",
+          "type": "section",
+          "label": "Supervisor Confirmation"
+        },
+        {
+          "id": "offshore-team",
+          "type": "text",
+          "label": "Offshore Team",
+          "required": false,
+          "placeholder": "e.g. Team A, Team B"
+        },
+        {
+          "id": "responsible-supervisor",
+          "type": "text",
+          "label": "Responsible Supervisor",
+          "required": true,
+          "placeholder": "Supervisor name"
+        },
+        {
+          "id": "presenter-mentor",
+          "type": "text",
+          "label": "Presenter / Mentor",
+          "required": false,
+          "placeholder": "Presenter / Mentor name"
+        },
+        {
+          "id": "supervisor-signature",
+          "type": "signature",
+          "label": "Supervisor Signature",
+          "required": true
+        }
+      ]
     }
   ]
 }
