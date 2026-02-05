@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../App'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, AlertCircle, Info } from 'lucide-react'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -9,6 +9,7 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showBackendInfo, setShowBackendInfo] = useState(false)
 
   const { login, loginDemo } = useAuth()
   const navigate = useNavigate()
@@ -17,12 +18,21 @@ function Login() {
     e.preventDefault()
     setError('')
     setIsLoading(true)
+    setShowBackendInfo(false)
 
     try {
       await login(email, password)
       navigate('/')
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.')
+      const errorMessage = err.message || 'Login failed. Please try again.'
+      setError(errorMessage)
+      
+      // If backend is unavailable, show helpful info
+      if (errorMessage.includes('Backend server') || 
+          errorMessage.includes('Unable to connect') ||
+          errorMessage.includes('not available')) {
+        setShowBackendInfo(true)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -53,8 +63,30 @@ function Login() {
         <div className="bg-white py-8 px-4 shadow-sm rounded-xl sm:px-10 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-                {error}
+              <div className="space-y-3">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+                  <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-medium">Login Error</p>
+                    <p className="mt-1 text-red-600">{error}</p>
+                  </div>
+                </div>
+                
+                {showBackendInfo && (
+                  <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+                    <Info size={18} className="flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-medium">Backend Not Available</p>
+                      <p className="mt-1 text-blue-600">
+                        The backend server is not running or is unreachable. 
+                        You can still explore the application using the <strong>Demo Account</strong> below.
+                      </p>
+                      <p className="mt-2 text-blue-600 text-xs">
+                        If you're the administrator, please ensure the backend server is running and properly configured.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -150,10 +182,13 @@ function Login() {
 
             <button
               onClick={handleDemoLogin}
-              className="mt-4 btn btn-secondary w-full py-3"
+              className="mt-4 btn btn-secondary w-full py-3 hover:bg-primary-50 transition-colors"
             >
               Continue with Demo Account
             </button>
+            <p className="mt-2 text-xs text-center text-gray-500">
+              No backend required • All features available • Perfect for evaluation
+            </p>
           </div>
 
           <p className="mt-6 text-center text-sm text-gray-500">

@@ -31,29 +31,47 @@ class ApiService {
       headers['Authorization'] = `Bearer ${this.token}`
     }
 
-    const response = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers,
-    })
+    try {
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers,
+      })
 
-    if (response.status === 401) {
-      // Try to refresh token
-      const refreshed = await this.refreshToken()
-      if (refreshed) {
-        headers['Authorization'] = `Bearer ${this.token}`
-        return fetch(`${API_BASE}${endpoint}`, { ...options, headers })
+      // Check if response is HTML (error page) instead of JSON
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('text/html')) {
+        throw new Error('Backend server is not available or returned an error page. Please try demo mode or check that the backend is running.')
       }
-      // Logout if refresh fails
-      localStorage.clear()
-      window.location.href = '/login'
-    }
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Request failed' }))
-      throw new Error(error.error || 'Request failed')
-    }
+      if (response.status === 401) {
+        // Try to refresh token
+        const refreshed = await this.refreshToken()
+        if (refreshed) {
+          headers['Authorization'] = `Bearer ${this.token}`
+          return fetch(`${API_BASE}${endpoint}`, { ...options, headers })
+        }
+        // Logout if refresh fails
+        localStorage.clear()
+        window.location.href = '/login'
+        throw new Error('Session expired. Please log in again.')
+      }
 
-    return response.json()
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ 
+          error: `Server error (${response.status}). The backend may not be running.` 
+        }))
+        throw new Error(error.error || error.message || `Request failed with status ${response.status}`)
+      }
+
+      return response.json()
+    } catch (error) {
+      // If it's a network error (backend not running)
+      if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+        throw new Error('Unable to connect to backend server. Please try demo mode or check that the backend is running.')
+      }
+      // Re-throw other errors
+      throw error
+    }
   }
 
   async refreshToken() {
@@ -82,10 +100,19 @@ class ApiService {
 
   // Auth
   async login(email, password) {
-    return this.request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
+    try {
+      return await this.request('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      })
+    } catch (error) {
+      // Provide user-friendly error messages
+      if (error.message.includes('Backend server is not available') || 
+          error.message.includes('Unable to connect')) {
+        throw new Error('Backend server is not available. Try using "Continue with Demo Account" to explore the application.')
+      }
+      throw error
+    }
   }
 
   async register(name, email, password) {
