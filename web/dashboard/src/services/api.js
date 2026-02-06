@@ -148,6 +148,80 @@ class ApiService {
     })
   }
 
+  async updateTemplate(id, data) {
+    return this.request(`/templates/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async deleteTemplate(id) {
+    return this.request(`/templates/${id}`, { method: 'DELETE' })
+  }
+
+  // Load shared industrial templates
+  async getSharedTemplates() {
+    try {
+      const response = await fetch('/templates/industrial-templates.json')
+      if (response.ok) {
+        return response.json()
+      }
+    } catch (e) {
+      console.log('Could not load shared templates')
+    }
+    // Return built-in templates as fallback
+    return [
+      {
+        id: 'daily-safety',
+        name: 'Daily Safety Inspection',
+        category: 'Safety',
+        description: 'Standard daily safety walkthrough inspection form',
+        fieldCount: 15,
+        featured: true
+      },
+      {
+        id: 'incident-report',
+        name: 'Incident/Accident Report',
+        category: 'Safety',
+        description: 'Report workplace incidents and accidents',
+        fieldCount: 18,
+        featured: true
+      },
+      {
+        id: 'equipment-checklist',
+        name: 'Equipment Pre-Use Checklist',
+        category: 'Operations',
+        description: 'Pre-operation safety check for equipment',
+        fieldCount: 14,
+        featured: false
+      },
+      {
+        id: 'hot-work-permit',
+        name: 'Hot Work Permit',
+        category: 'Permits',
+        description: 'Authorization for welding, cutting, and open flame work',
+        fieldCount: 20,
+        featured: true
+      },
+      {
+        id: 'delivery-receipt',
+        name: 'Delivery Receipt',
+        category: 'Logistics',
+        description: 'Confirm receipt of deliveries with signatures',
+        fieldCount: 12,
+        featured: false
+      },
+      {
+        id: 'toolbox-talk',
+        name: 'Toolbox Talk / Safety Meeting',
+        category: 'Safety',
+        description: 'Document safety meetings and attendee acknowledgments',
+        fieldCount: 10,
+        featured: false
+      }
+    ]
+  }
+
   // User
   async getProfile() {
     return this.request('/users/me')

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import api from '../services/api'
 import {
   FileText,
@@ -15,10 +15,13 @@ import {
   Truck,
   Building,
   Heart,
-  AlertTriangle
+  AlertTriangle,
+  Plus,
+  Sparkles
 } from 'lucide-react'
 
 function Templates() {
+  const navigate = useNavigate()
   const [templates, setTemplates] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -31,8 +34,23 @@ function Templates() {
 
   const loadTemplates = async () => {
     try {
-      const data = await api.getTemplates()
-      setTemplates(data.templates || data)
+      // Load both API templates and shared templates
+      const [apiTemplates, sharedTemplates] = await Promise.all([
+        api.getTemplates().catch(() => []),
+        api.getSharedTemplates().catch(() => [])
+      ])
+
+      // Also load any locally saved templates
+      const localTemplates = JSON.parse(localStorage.getItem('localTemplates') || '[]')
+
+      // Combine all templates, marking their source
+      const allTemplates = [
+        ...(sharedTemplates || []).map(t => ({ ...t, source: 'shared', featured: t.featured ?? true })),
+        ...(Array.isArray(apiTemplates) ? apiTemplates : apiTemplates?.templates || []).map(t => ({ ...t, source: 'api' })),
+        ...localTemplates.map(t => ({ ...t, source: 'local' }))
+      ]
+
+      setTemplates(allTemplates)
     } catch (err) {
       console.error('Failed to load templates:', err)
     } finally {
@@ -85,6 +103,15 @@ function Templates() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Templates</h1>
           <p className="text-gray-500">Browse and manage form templates</p>
+        </div>
+        <div className="flex gap-2">
+          <Link
+            to="/builder"
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <Plus size={16} />
+            Create Template
+          </Link>
         </div>
       </div>
 
@@ -198,9 +225,15 @@ function Templates() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="mt-4 pt-4 border-t border-gray-100 flex gap-3">
+                  <Link
+                    to={`/fill/${template.id}`}
+                    className="flex-1 btn btn-primary text-center text-sm py-2"
+                  >
+                    Fill Form
+                  </Link>
                   <button className="text-primary-500 hover:text-primary-600 text-sm font-medium">
-                    View Template →
+                    Details →
                   </button>
                 </div>
               </div>
@@ -248,9 +281,12 @@ function Templates() {
                     </span>
                   </div>
 
-                  <button className="text-primary-500 hover:text-primary-600 text-sm font-medium whitespace-nowrap">
-                    View →
-                  </button>
+                  <Link
+                    to={`/fill/${template.id}`}
+                    className="btn btn-primary text-sm py-1.5 px-3"
+                  >
+                    Fill
+                  </Link>
                 </div>
               )
             })}
@@ -259,12 +295,23 @@ function Templates() {
       )}
 
       {/* Info Box */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
-        <h3 className="font-semibold text-blue-900 mb-2">Creating Templates</h3>
-        <p className="text-blue-700 text-sm">
-          Templates are created and managed through the iOS app. Use the Form Builder in the app to create
-          custom templates with 18+ field types, conditional logic, and workflow automation.
-        </p>
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100 rounded-xl p-5">
+        <div className="flex items-start gap-3">
+          <Sparkles className="text-primary-500 flex-shrink-0 mt-0.5" size={20} />
+          <div>
+            <h3 className="font-semibold text-blue-900 mb-2">Create Templates with AI</h3>
+            <p className="text-blue-700 text-sm mb-3">
+              Use the Form Builder to create custom templates with 18 field types, drag-and-drop ordering,
+              and AI-powered form generation. Templates sync between web and iOS apps.
+            </p>
+            <Link
+              to="/builder"
+              className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium"
+            >
+              Open Form Builder →
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   )

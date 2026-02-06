@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Forms from './pages/Forms'
 import FormDetail from './pages/FormDetail'
 import FormBuilder from './pages/FormBuilder'
+import FormFiller from './pages/FormFiller'
 import Templates from './pages/Templates'
 import Settings from './pages/Settings'
 import { api } from './services/api'
@@ -107,6 +108,7 @@ function App() {
             <Route path="builder" element={<FormBuilder />} />
             <Route path="builder/:id" element={<FormBuilder />} />
             <Route path="templates" element={<Templates />} />
+            <Route path="fill/:templateId" element={<FormFiller />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>

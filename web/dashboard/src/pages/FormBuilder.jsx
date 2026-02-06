@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../services/api'
 import {
   Plus,
   GripVertical,
@@ -32,10 +33,12 @@ import {
   DollarSign,
   Star,
   SlidersHorizontal,
-  LayoutList
+  LayoutList,
+  Mic,
+  Loader2
 } from 'lucide-react'
 
-// Field type definitions
+// Field type definitions - matches iOS app's 18 field types
 const FIELD_TYPES = [
   { type: 'section', label: 'Section Header', icon: LayoutList, color: 'bg-gray-500' },
   { type: 'text', label: 'Text Input', icon: Type, color: 'bg-blue-500' },
@@ -52,7 +55,9 @@ const FIELD_TYPES = [
   { type: 'signature', label: 'Signature', icon: PenLine, color: 'bg-red-500' },
   { type: 'photo', label: 'Photo', icon: Camera, color: 'bg-pink-500' },
   { type: 'location', label: 'GPS Location', icon: MapPin, color: 'bg-emerald-500' },
+  { type: 'currency', label: 'Currency', icon: DollarSign, color: 'bg-green-600' },
   { type: 'rating', label: 'Star Rating', icon: Star, color: 'bg-yellow-500' },
+  { type: 'slider', label: 'Slider', icon: SlidersHorizontal, color: 'bg-cyan-500' },
 ]
 
 function FormBuilder() {
@@ -258,6 +263,8 @@ function FormBuilder() {
   }
 
   // Save form
+  const [isSaving, setIsSaving] = useState(false)
+
   const saveForm = async () => {
     if (!formName.trim()) {
       alert('Please enter a form name')
@@ -268,20 +275,42 @@ function FormBuilder() {
       return
     }
 
-    const formData = {
+    setIsSaving(true)
+
+    const templateData = {
       name: formName,
       description: formDescription,
       category: formCategory,
       logo: formLogo,
-      fields: fields.map((f, i) => ({ ...f, order: i })),
+      fields: fields.map((f, i) => ({
+        id: f.id,
+        type: f.type,
+        label: f.label,
+        required: f.required,
+        placeholder: f.placeholder || '',
+        options: f.options || [],
+        description: f.description || '',
+        order: i
+      })),
       version: '1.0',
       createdAt: new Date().toISOString()
     }
 
-    // In production, save to API
-    console.log('Saving form:', formData)
-    alert('Form saved successfully!')
-    // navigate('/templates')
+    try {
+      await api.createTemplate(templateData)
+      alert('Template saved successfully!')
+      navigate('/templates')
+    } catch (err) {
+      console.error('Failed to save template:', err)
+      // Save locally as fallback
+      const localTemplates = JSON.parse(localStorage.getItem('localTemplates') || '[]')
+      localTemplates.push({ ...templateData, id: `local-${Date.now()}` })
+      localStorage.setItem('localTemplates', JSON.stringify(localTemplates))
+      alert('Template saved locally. It will sync when connected.')
+      navigate('/templates')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   // Get selected field
@@ -312,10 +341,20 @@ function FormBuilder() {
             </button>
             <button
               onClick={saveForm}
-              className="btn btn-primary flex items-center gap-2"
+              disabled={isSaving}
+              className="btn btn-primary flex items-center gap-2 disabled:opacity-50"
             >
-              <Save size={16} />
-              Save Template
+              {isSaving ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  Save Template
+                </>
+              )}
             </button>
           </div>
         </div>
