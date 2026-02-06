@@ -164,12 +164,14 @@ class ApiService {
     try {
       const response = await fetch('/templates/industrial-templates.json')
       if (response.ok) {
-        return response.json()
+        const data = await response.json()
+        // Return the templates array with all fields
+        return data.templates || data
       }
     } catch (e) {
-      console.log('Could not load shared templates')
+      console.log('Could not load shared templates from file')
     }
-    // Return built-in templates as fallback
+    // Return built-in templates as fallback (with basic fields)
     return [
       {
         id: 'daily-safety',
@@ -177,7 +179,24 @@ class ApiService {
         category: 'Safety',
         description: 'Standard daily safety walkthrough inspection form',
         fieldCount: 15,
-        featured: true
+        featured: true,
+        fields: [
+          { id: 'header', type: 'section', label: 'Inspection Details' },
+          { id: 'date', type: 'date', label: 'Inspection Date', required: true },
+          { id: 'location', type: 'dropdown', label: 'Work Area', required: true, options: ['Warehouse A', 'Warehouse B', 'Loading Dock', 'Manufacturing Floor', 'Other'] },
+          { id: 'inspector', type: 'text', label: 'Inspector Name', required: true },
+          { id: 'ppe-section', type: 'section', label: 'PPE Checks' },
+          { id: 'ppe-available', type: 'yesNo', label: 'Required PPE available?', required: true },
+          { id: 'ppe-worn', type: 'yesNo', label: 'All personnel wearing PPE?', required: true },
+          { id: 'housekeeping-section', type: 'section', label: 'Housekeeping' },
+          { id: 'floors-clear', type: 'yesNo', label: 'Floors clear?', required: true },
+          { id: 'aisles-clear', type: 'yesNo', label: 'Aisles clear?', required: true },
+          { id: 'hazards-section', type: 'section', label: 'Hazards' },
+          { id: 'hazards-found', type: 'yesNo', label: 'Any hazards found?', required: true },
+          { id: 'hazard-description', type: 'textarea', label: 'Describe hazards', required: false },
+          { id: 'signature-section', type: 'section', label: 'Verification' },
+          { id: 'inspector-signature', type: 'signature', label: 'Inspector Signature', required: true }
+        ]
       },
       {
         id: 'incident-report',
@@ -185,7 +204,24 @@ class ApiService {
         category: 'Safety',
         description: 'Report workplace incidents and accidents',
         fieldCount: 18,
-        featured: true
+        featured: true,
+        fields: [
+          { id: 'header', type: 'section', label: 'Incident Information' },
+          { id: 'incident-date', type: 'date', label: 'Date of Incident', required: true },
+          { id: 'incident-time', type: 'time', label: 'Time of Incident', required: true },
+          { id: 'incident-type', type: 'dropdown', label: 'Type of Incident', required: true, options: ['Injury', 'Near Miss', 'Property Damage', 'Other'] },
+          { id: 'location', type: 'text', label: 'Location', required: true },
+          { id: 'injured-section', type: 'section', label: 'Injured Person' },
+          { id: 'injured-name', type: 'text', label: 'Name', required: false },
+          { id: 'description-section', type: 'section', label: 'Description' },
+          { id: 'description', type: 'textarea', label: 'What happened?', required: true },
+          { id: 'photo', type: 'photo', label: 'Photo of scene', required: false },
+          { id: 'actions-section', type: 'section', label: 'Actions' },
+          { id: 'immediate-actions', type: 'textarea', label: 'Immediate actions taken', required: true },
+          { id: 'signature-section', type: 'section', label: 'Signatures' },
+          { id: 'reporter-signature', type: 'signature', label: 'Reporter Signature', required: true },
+          { id: 'gps', type: 'location', label: 'GPS Location', required: false }
+        ]
       },
       {
         id: 'equipment-checklist',
@@ -193,15 +229,23 @@ class ApiService {
         category: 'Operations',
         description: 'Pre-operation safety check for equipment',
         fieldCount: 14,
-        featured: false
-      },
-      {
-        id: 'hot-work-permit',
-        name: 'Hot Work Permit',
-        category: 'Permits',
-        description: 'Authorization for welding, cutting, and open flame work',
-        fieldCount: 20,
-        featured: true
+        featured: false,
+        fields: [
+          { id: 'header', type: 'section', label: 'Equipment Information' },
+          { id: 'date', type: 'date', label: 'Date', required: true },
+          { id: 'equipment-type', type: 'dropdown', label: 'Equipment Type', required: true, options: ['Forklift', 'Crane', 'Truck', 'Other'] },
+          { id: 'equipment-id', type: 'text', label: 'Equipment ID', required: true },
+          { id: 'operator', type: 'text', label: 'Operator Name', required: true },
+          { id: 'checks-section', type: 'section', label: 'Safety Checks' },
+          { id: 'visual-ok', type: 'yesNo', label: 'Visual inspection OK?', required: true },
+          { id: 'safety-features', type: 'yesNo', label: 'Safety features working?', required: true },
+          { id: 'controls-ok', type: 'yesNo', label: 'Controls functioning?', required: true },
+          { id: 'safe-to-operate', type: 'yesNo', label: 'Safe to operate?', required: true },
+          { id: 'defects-section', type: 'section', label: 'Defects' },
+          { id: 'defects-found', type: 'yesNo', label: 'Any defects?', required: true },
+          { id: 'defect-notes', type: 'textarea', label: 'Defect details', required: false },
+          { id: 'operator-signature', type: 'signature', label: 'Operator Signature', required: true }
+        ]
       },
       {
         id: 'delivery-receipt',
@@ -209,15 +253,21 @@ class ApiService {
         category: 'Logistics',
         description: 'Confirm receipt of deliveries with signatures',
         fieldCount: 12,
-        featured: false
-      },
-      {
-        id: 'toolbox-talk',
-        name: 'Toolbox Talk / Safety Meeting',
-        category: 'Safety',
-        description: 'Document safety meetings and attendee acknowledgments',
-        fieldCount: 10,
-        featured: false
+        featured: false,
+        fields: [
+          { id: 'header', type: 'section', label: 'Delivery Information' },
+          { id: 'date', type: 'date', label: 'Delivery Date', required: true },
+          { id: 'time', type: 'time', label: 'Delivery Time', required: true },
+          { id: 'order-number', type: 'text', label: 'Order Number', required: true },
+          { id: 'items-section', type: 'section', label: 'Items' },
+          { id: 'items', type: 'textarea', label: 'Items Delivered', required: true },
+          { id: 'quantity', type: 'number', label: 'Quantity', required: true },
+          { id: 'condition', type: 'dropdown', label: 'Condition', required: true, options: ['Good', 'Minor Damage', 'Damaged'] },
+          { id: 'photo', type: 'photo', label: 'Photo of delivery', required: false },
+          { id: 'signatures-section', type: 'section', label: 'Signatures' },
+          { id: 'receiver-signature', type: 'signature', label: 'Receiver Signature', required: true },
+          { id: 'driver-signature', type: 'signature', label: 'Driver Signature', required: true }
+        ]
       }
     ]
   }
