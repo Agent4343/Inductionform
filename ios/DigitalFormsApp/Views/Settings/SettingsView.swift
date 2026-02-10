@@ -103,6 +103,12 @@ struct SettingsView: View {
                     } label: {
                         Label("Change Password", systemImage: "key")
                     }
+
+                    NavigationLink {
+                        TwoFactorSettingsView()
+                    } label: {
+                        Label("Two-Factor Auth", systemImage: "lock.shield")
+                    }
                 } header: {
                     Text("Security")
                 }
@@ -121,6 +127,12 @@ struct SettingsView: View {
                         AppearanceSettingsView()
                     } label: {
                         Label("Appearance", systemImage: "paintbrush")
+                    }
+
+                    NavigationLink {
+                        AccessibilitySettingsView()
+                    } label: {
+                        Label("Accessibility", systemImage: "accessibility")
                     }
                 } header: {
                     Text("Preferences")
@@ -587,6 +599,147 @@ struct HelpDetailView: View {
                 .padding()
         }
         .navigationTitle(title)
+    }
+}
+
+// MARK: - Two-Factor Settings View
+
+struct TwoFactorSettingsView: View {
+    @State private var is2FAEnabled = false
+    @State private var showingSetup = false
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Enable Two-Factor Auth", isOn: $is2FAEnabled)
+                    .onChange(of: is2FAEnabled) { _, newValue in
+                        if newValue {
+                            showingSetup = true
+                        }
+                    }
+            } footer: {
+                Text("Add an extra layer of security by requiring a verification code when signing in.")
+            }
+
+            if is2FAEnabled {
+                Section("Recovery") {
+                    NavigationLink("View Recovery Codes") {
+                        RecoveryCodesView()
+                    }
+
+                    Button("Regenerate Codes") {
+                        // Regenerate codes
+                    }
+                }
+            }
+        }
+        .navigationTitle("Two-Factor Auth")
+        .sheet(isPresented: $showingSetup) {
+            TwoFactorSetupView()
+        }
+    }
+}
+
+struct TwoFactorSetupView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                Image(systemName: "lock.shield.fill")
+                    .font(.system(size: 60))
+                    .foregroundColor(.accentColor)
+
+                Text("Scan QR Code")
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Text("Use your authenticator app to scan this code")
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+
+                // Placeholder for QR code
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 200, height: 200)
+                    .overlay {
+                        Image(systemName: "qrcode")
+                            .font(.system(size: 80))
+                            .foregroundColor(.gray)
+                    }
+
+                Spacer()
+
+                Button("Done") {
+                    dismiss()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding()
+            .navigationTitle("Setup 2FA")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+struct RecoveryCodesView: View {
+    let codes = ["ABCD-1234", "EFGH-5678", "IJKL-9012", "MNOP-3456"]
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(codes, id: \.self) { code in
+                    Text(code)
+                        .font(.system(.body, design: .monospaced))
+                }
+            } footer: {
+                Text("Store these codes in a safe place. Each code can only be used once.")
+            }
+        }
+        .navigationTitle("Recovery Codes")
+    }
+}
+
+// MARK: - Accessibility Settings View
+
+struct AccessibilitySettingsView: View {
+    @AppStorage("highContrastEnabled") private var highContrastEnabled = false
+    @AppStorage("reduceMotion") private var reduceMotion = false
+    @AppStorage("largeText") private var largeText = false
+
+    var body: some View {
+        Form {
+            Section("Display") {
+                Toggle("High Contrast", isOn: $highContrastEnabled)
+                Toggle("Reduce Motion", isOn: $reduceMotion)
+                Toggle("Larger Text", isOn: $largeText)
+            }
+
+            Section("VoiceOver") {
+                HStack {
+                    Text("VoiceOver Status")
+                    Spacer()
+                    Text(UIAccessibility.isVoiceOverRunning ? "Running" : "Off")
+                        .foregroundColor(.secondary)
+                }
+
+                Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+                    Label("Open System Settings", systemImage: "gear")
+                }
+            }
+
+            Section {
+                Text("These settings help make the app more accessible. For system-wide accessibility settings, open the Settings app.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .navigationTitle("Accessibility")
     }
 }
 
