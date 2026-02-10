@@ -18,7 +18,8 @@ struct BuiltInTemplates {
         expenseReport,
         customerFeedback,
         deliveryReceipt,
-        maintenanceRequest
+        maintenanceRequest,
+        offshoreInductionForm
     ]
 
     // MARK: - Safety Inspection
@@ -310,7 +311,102 @@ struct BuiltInTemplates {
             FieldDefinition(id: "signature", type: "signature", label: "Requester Signature", required: true)
         ]
     )
+    
+    // MARK: - Offshore Induction Form
+    
+    static let offshoreInductionForm = TemplateDefinition(
+        id: "offshore-induction-hebron",
+        name: "Offshore Induction Form - Hebron Platform",
+        description: "Hebron Platform - Green Hat Program (CANE-EC-OFPRO-01-005-4008-00 | 04)",
+        category: "Safety",
+        fields: [
+            // Header Information
+            FieldDefinition(id: "form_id", type: "text", label: "Form ID", placeholder: "CANE-EC-OFPRO-01-005-4008-00 | 04"),
+            FieldDefinition(id: "instructions", type: "section", label: "Instructions"),
+            FieldDefinition(id: "instructions_text", type: "textarea", label: "Form provided to Responsible Supervisor - Copy to be provided to the Onshore Training Administrator via SSH&E Lead. All items to be completed by Heli-admin for all regular employees, vendors and visitors."),
+            
+            // Section 1: General Orientation (31 items)
+            FieldDefinition(id: "section_orientation", type: "section", label: "General Orientation (0/31 checked)"),
+            FieldDefinition(id: "muster_station_1", type: "checkbox", label: "Location of Muster Station 1 (Galley - LQ Level 2)"),
+            FieldDefinition(id: "muster_station_2", type: "checkbox", label: "Location of Muster Station 2 (Galley - LQ Level 2)"),
+            FieldDefinition(id: "muster_station_3", type: "checkbox", label: "Location of Muster Station 3 (Recreation Area - LQ Level 2)"),
+            FieldDefinition(id: "muster_station_4", type: "checkbox", label: "Location of Muster Station 4 (Fitness Area LQ Level 1)"),
+            FieldDefinition(id: "lifeboats_escape", type: "checkbox", label: "Location of Lifeboats and Escape Chute Evacuation Systems"),
+            FieldDefinition(id: "abandonment_equipment", type: "checkbox", label: "Location of abandonment suits, life jackets and smoke hoods"),
+            FieldDefinition(id: "lq_level_1", type: "checkbox", label: "LQ Level 1 (Laundry, Locker Rooms, Games Room, Fitness Room)"),
+            FieldDefinition(id: "lq_level_2", type: "checkbox", label: "LQ Level 2 (Galley, Kiosk, Recreation Areas, Conference Room, Phone Booths, Coffee Room, Music Room, Hobby Room, Internet, Clnk, LQ Staff Locker rooms)"),
+            FieldDefinition(id: "upm_lsm", type: "checkbox", label: "UPM LSM (Production Offices, CCR, ECC, Permit Office, Doc Control, Conference Room, Radio Room)"),
+            FieldDefinition(id: "quiet_rooms", type: "checkbox", label: "Quiet Rooms LQ Levels 3 & 4"),
+            FieldDefinition(id: "quiet_zones", type: "checkbox", label: "LQ Levels 3, 4 & 5 are cabin areas which are designated quiet zones"),
+            FieldDefinition(id: "lq_level_5", type: "checkbox", label: "LQ Level 5 (Heli Admin, Medic's Office, Sickbay, Mental Health Room)"),
+            FieldDefinition(id: "upm_ud", type: "checkbox", label: "UPM UD (Drilling Offices, Conference Room, Break Room)"),
+            FieldDefinition(id: "gpa_alarm", type: "checkbox", label: "On General Platform Alarm (GPA) or H2S alarm, go to your Muster Station"),
+            FieldDefinition(id: "papa_alarm", type: "checkbox", label: "On prepare to Abandon Platform Alarm (PAPA), go to your Lifeboat Station"),
+            FieldDefinition(id: "pa_directions", type: "checkbox", label: "Always listen to the PA and follow directions during an emergency"),
+            FieldDefinition(id: "muster_drill", type: "checkbox", label: "Muster Drill once per week"),
+            FieldDefinition(id: "emergency_numbers", type: "checkbox", label: "Informed of Emergency Platform telephone numbers (333)"),
+            FieldDefinition(id: "station_bill", type: "checkbox", label: "Familiarized with Platform Station Bill"),
+            FieldDefinition(id: "alternate_muster", type: "checkbox", label: "Persons alternate muster station is their assigned lifeboat"),
+            FieldDefinition(id: "door_closure", type: "checkbox", label: "Ensure that external and stairwell doors remain closed (Area pressurization)"),
+            FieldDefinition(id: "hearing_conservation_double", type: "checkbox", label: "Hearing conservation - Double hearing protection areas"),
+            FieldDefinition(id: "green_hard_hat", type: "checkbox", label: "Issued Green Hard Hat & explanation of Green Hat policy"),
+            FieldDefinition(id: "hearing_protection_areas", type: "checkbox", label: "Hearing Conservation - Double hearing Protection Areas"),
+            FieldDefinition(id: "bunk_assignment", type: "checkbox", label: "Indicate the bunk assignment and location A&B bunk"),
+            FieldDefinition(id: "jewelry_prohibited", type: "checkbox", label: "Wearing of personal jewelry while on shift is prohibited"),
+            FieldDefinition(id: "galley_restrictions", type: "checkbox", label: "No Backpacks, PPE or shorts permitted in the Galley or TV room"),
+            FieldDefinition(id: "footwear_rules", type: "checkbox", label: "No open toed shoes or sandals are permitted to be worn outside a person's room"),
+            FieldDefinition(id: "dietary_restrictions", type: "checkbox", label: "Please inform the Chef of any dietary restrictions or allergies"),
+            FieldDefinition(id: "bunk_location", type: "checkbox", label: "Indicate the bunk assignment and location of A & B bunk"),
+            FieldDefinition(id: "introductions", type: "checkbox", label: "Introduce new personnel to OIM and SSH&E Lead"),
+            
+            // Section 2: Safety Overview (3 items)
+            FieldDefinition(id: "section_safety_overview", type: "section", label: "Safety Overview (0/3 checked)"),
+            FieldDefinition(id: "hazard_id", type: "checkbox", label: "Hazard I.D. and personal safety (Refer to SHE Handbook)"),
+            FieldDefinition(id: "right_to_work", type: "checkbox", label: "Right to Work Safety Explained"),
+            FieldDefinition(id: "process_safety", type: "checkbox", label: "Process safety & PSMS overview"),
+            
+            // Section 3: Detailed Safety Training (16 items)
+            FieldDefinition(id: "section_safety_training", type: "section", label: "Detailed Safety Training (0/16 checked)"),
+            FieldDefinition(id: "incident_reporting", type: "checkbox", label: "Incident and Injury Reporting / Near Miss / Haz. I.D. / Learning from Incidents"),
+            FieldDefinition(id: "environmental_reporting", type: "checkbox", label: "Environmental / Sheen Reporting / Sea Bird Handling"),
+            FieldDefinition(id: "waste_management", type: "checkbox", label: "Waste Management / Control Procedures (Recycling, waste segregation, Batteries)"),
+            FieldDefinition(id: "regulations", type: "checkbox", label: "Location of Acts and Regulations and Regulatory Training (as required)"),
+            FieldDefinition(id: "emergency_duties", type: "checkbox", label: "Emergency Response Duties (as required)"),
+            FieldDefinition(id: "safety_systems", type: "checkbox", label: "Overview of Platform Safety Systems"),
+            FieldDefinition(id: "process_safety_role", type: "checkbox", label: "Explanation of Role in Process Safety, Managing Safeguards & Role Card"),
+            FieldDefinition(id: "manual_call_point", type: "checkbox", label: "Explain Manual call point/ESD button function (do not tamper with button or remove flag)"),
+            FieldDefinition(id: "hazardous_materials", type: "checkbox", label: "Hazardous Materials (NORM, Pyrophoric Scale, Chemicals) PSIMS"),
+            FieldDefinition(id: "workplace_committee", type: "checkbox", label: "Workplace Committee Overview & Introduction to team Safety Representative"),
+            FieldDefinition(id: "herc", type: "checkbox", label: "Hebron Employee Relations Committee (HERC)"),
+            FieldDefinition(id: "electrical_access", type: "checkbox", label: "Access to electrical rooms (LER) and instrumentation rooms (LIR) are restricted"),
+            FieldDefinition(id: "non_is_equipment", type: "checkbox", label: "Use of Non-IS Equipment (i.e., Laptop Computer batteries)"),
+            FieldDefinition(id: "ppe_check", type: "checkbox", label: "PPE brought onboard is checked & meets required standards"),
+            FieldDefinition(id: "ppe_requirements", type: "checkbox", label: "Requirements for wearing of PPE is explained and understood"),
+            FieldDefinition(id: "computer_policies", type: "checkbox", label: "Computer Usage Policies"),
+            
+            // Section 4: Work Management System (3 items)
+            FieldDefinition(id: "section_wms", type: "section", label: "Work Management System (0/3 checked)"),
+            FieldDefinition(id: "wms_overview", type: "checkbox", label: "Overview of WMS and PSMS"),
+            FieldDefinition(id: "knives_procedure", type: "checkbox", label: "Review the \"Control and use of Knives\" Procedure"),
+            FieldDefinition(id: "mentor_appointment", type: "checkbox", label: "Introduction to co-workers, and Supervisor has appointed competent person to Mentor for all activities outside of the Living Quarters"),
+            
+            // Section 5: Inductee Acknowledgement
+            FieldDefinition(id: "section_inductee", type: "section", label: "Inductee Acknowledgement"),
+            FieldDefinition(id: "inductee_name", type: "text", label: "Name (Print)", required: true, placeholder: "Full name"),
+            FieldDefinition(id: "inductee_company", type: "text", label: "Company", required: true, placeholder: "Company name"),
+            FieldDefinition(id: "inductee_date", type: "date", label: "Date", required: true),
+            FieldDefinition(id: "inductee_signature", type: "signature", label: "Inductee Signature", required: true),
+            
+            // Section 6: Supervisor Confirmation
+            FieldDefinition(id: "section_supervisor", type: "section", label: "Supervisor Confirmation"),
+            FieldDefinition(id: "offshore_team", type: "text", label: "Offshore Team", placeholder: "e.g. Team A, Team B"),
+            FieldDefinition(id: "responsible_supervisor", type: "text", label: "Responsible Supervisor", required: true, placeholder: "Supervisor name"),
+            FieldDefinition(id: "presenter_mentor", type: "text", label: "Presenter / Mentor", placeholder: "Presenter / Mentor name"),
+            FieldDefinition(id: "supervisor_signature", type: "signature", label: "Supervisor Signature", required: true)
+        ]
+    )
 }
+
 
 // MARK: - Template Definition
 

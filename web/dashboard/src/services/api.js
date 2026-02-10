@@ -5,13 +5,23 @@ const API_BASE = import.meta.env.VITE_API_URL || '/api'
 class ApiService {
   constructor() {
     this.token = null
+    this.demoMode = false
   }
 
   setToken(token) {
     this.token = token
   }
 
+  setDemoMode(isDemoMode) {
+    this.demoMode = isDemoMode
+  }
+
   async request(endpoint, options = {}) {
+    // In demo mode, don't make real API calls
+    if (this.demoMode) {
+      throw new Error('Demo mode - API calls disabled')
+    }
+
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -21,29 +31,47 @@ class ApiService {
       headers['Authorization'] = `Bearer ${this.token}`
     }
 
-    const response = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers,
-    })
+    try {
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers,
+      })
 
-    if (response.status === 401) {
-      // Try to refresh token
-      const refreshed = await this.refreshToken()
-      if (refreshed) {
-        headers['Authorization'] = `Bearer ${this.token}`
-        return fetch(`${API_BASE}${endpoint}`, { ...options, headers })
+      // Check if response is HTML (error page) instead of JSON
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('text/html')) {
+        throw new Error('Backend server is not available or returned an error page. Please try demo mode or check that the backend is running.')
       }
-      // Logout if refresh fails
-      localStorage.clear()
-      window.location.href = '/login'
-    }
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Request failed' }))
-      throw new Error(error.error || 'Request failed')
-    }
+      if (response.status === 401) {
+        // Try to refresh token
+        const refreshed = await this.refreshToken()
+        if (refreshed) {
+          headers['Authorization'] = `Bearer ${this.token}`
+          return fetch(`${API_BASE}${endpoint}`, { ...options, headers })
+        }
+        // Logout if refresh fails
+        localStorage.clear()
+        window.location.href = '/login'
+        throw new Error('Session expired. Please log in again.')
+      }
 
-    return response.json()
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ 
+          error: `Server error (${response.status}). The backend may not be running.` 
+        }))
+        throw new Error(error.error || error.message || `Request failed with status ${response.status}`)
+      }
+
+      return response.json()
+    } catch (error) {
+      // If it's a network error (backend not running)
+      if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+        throw new Error('Unable to connect to backend server. Please try demo mode or check that the backend is running.')
+      }
+      // Re-throw other errors
+      throw error
+    }
   }
 
   async refreshToken() {
@@ -72,10 +100,19 @@ class ApiService {
 
   // Auth
   async login(email, password) {
-    return this.request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
+    try {
+      return await this.request('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      })
+    } catch (error) {
+      // Provide user-friendly error messages
+      if (error.message.includes('Backend server is not available') || 
+          error.message.includes('Unable to connect')) {
+        throw new Error('Backend server is not available. Try using "Continue with Demo Account" to explore the application.')
+      }
+      throw error
+    }
   }
 
   async register(name, email, password) {
@@ -87,6 +124,10 @@ class ApiService {
 
   // Forms
   async getForms(params = {}) {
+    if (this.demoMode) {
+      // Return demo forms in demo mode
+      return { forms: demoData.forms, total: demoData.forms.length }
+    }
     try {
       const query = new URLSearchParams(params).toString()
       return await this.request(`/forms${query ? `?${query}` : ''}`)
@@ -152,6 +193,11 @@ class ApiService {
   }
 
   async getForm(id) {
+    if (this.demoMode) {
+      const form = demoData.forms.find(f => f.id === id)
+      if (!form) throw new Error('Form not found')
+      return form
+    }
     try {
       return await this.request(`/forms/${id}`)
     } catch (e) {
@@ -195,6 +241,10 @@ class ApiService {
   }
 
   async createForm(data) {
+    if (this.demoMode) {
+      // Simulate creating a form
+      return { id: 'demo-' + Date.now(), ...data, status: 'draft' }
+    }
     return this.request('/forms', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -202,6 +252,9 @@ class ApiService {
   }
 
   async updateForm(id, data) {
+    if (this.demoMode) {
+      return { id, ...data }
+    }
     return this.request(`/forms/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -209,14 +262,23 @@ class ApiService {
   }
 
   async deleteForm(id) {
+    if (this.demoMode) {
+      return { success: true }
+    }
     return this.request(`/forms/${id}`, { method: 'DELETE' })
   }
 
   async submitForm(id) {
+    if (this.demoMode) {
+      return { id, status: 'submitted' }
+    }
     return this.request(`/forms/${id}/submit`, { method: 'POST' })
   }
 
   async approveForm(id, comments) {
+    if (this.demoMode) {
+      return { id, status: 'approved', comments }
+    }
     return this.request(`/forms/${id}/approve`, {
       method: 'POST',
       body: JSON.stringify({ comments }),
@@ -224,6 +286,9 @@ class ApiService {
   }
 
   async rejectForm(id, reason) {
+    if (this.demoMode) {
+      return { id, status: 'rejected', reason }
+    }
     return this.request(`/forms/${id}/reject`, {
       method: 'POST',
       body: JSON.stringify({ reason }),
@@ -232,15 +297,27 @@ class ApiService {
 
   // Templates
   async getTemplates(params = {}) {
+    if (this.demoMode) {
+      // Return demo templates
+      return { templates: demoData.templates }
+    }
     const query = new URLSearchParams(params).toString()
     return this.request(`/templates${query ? `?${query}` : ''}`)
   }
 
   async getTemplate(id) {
+    if (this.demoMode) {
+      const template = demoData.templates.find(t => t.id === id)
+      if (!template) throw new Error('Template not found')
+      return template
+    }
     return this.request(`/templates/${id}`)
   }
 
   async createTemplate(data) {
+    if (this.demoMode) {
+      return { id: 'demo-template-' + Date.now(), ...data }
+    }
     return this.request('/templates', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -373,10 +450,21 @@ class ApiService {
 
   // User
   async getProfile() {
+    if (this.demoMode) {
+      return {
+        id: 'demo-user',
+        name: 'Demo User',
+        email: 'demo@example.com',
+        role: 'admin'
+      }
+    }
     return this.request('/users/me')
   }
 
   async updateProfile(data) {
+    if (this.demoMode) {
+      return { ...data }
+    }
     return this.request('/users/me', {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -384,11 +472,26 @@ class ApiService {
   }
 
   async getNotifications() {
+    if (this.demoMode) {
+      return []
+    }
     return this.request('/users/me/notifications')
   }
 
   // Stats/Dashboard
   async getStats() {
+    if (this.demoMode) {
+      // Return demo stats
+      return {
+        totalForms: 47,
+        completedForms: 32,
+        pendingForms: 12,
+        requiresAction: 3,
+        weeklySubmissions: 15,
+        weeklyApprovals: 11,
+        activeUsers: 8
+      }
+    }
     try {
       return await this.request('/stats')
     } catch {
@@ -406,6 +509,9 @@ class ApiService {
   }
 
   async updateFormStatus(id, status, reason = null) {
+    if (this.demoMode) {
+      return { id, status, reason }
+    }
     return this.request(`/forms/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ status, reason }),
@@ -468,11 +574,61 @@ export const demoData = {
     },
   ],
   templates: [
-    { id: '1', name: 'Safety Inspection', category: 'Safety', fieldCount: 21 },
-    { id: '2', name: 'Incident Report', category: 'Safety', fieldCount: 23 },
-    { id: '3', name: 'Work Order', category: 'Maintenance', fieldCount: 17 },
-    { id: '4', name: 'Visitor Sign-In', category: 'Administration', fieldCount: 15 },
-    { id: '5', name: 'Equipment Checklist', category: 'Operations', fieldCount: 23 },
-    { id: '6', name: 'Time Sheet', category: 'HR', fieldCount: 18 },
+    { 
+      id: 'daily-safety-inspection', 
+      name: 'Daily Safety Inspection', 
+      category: 'safety', 
+      fieldCount: 30,
+      description: 'Comprehensive daily safety inspection checklist',
+      estimatedTime: '5-10 min'
+    },
+    { 
+      id: 'incident-report', 
+      name: 'Incident / Accident Report', 
+      category: 'safety', 
+      fieldCount: 30,
+      description: 'Detailed incident and accident reporting form',
+      estimatedTime: '10-15 min'
+    },
+    { 
+      id: 'equipment-checklist', 
+      name: 'Equipment Pre-Use Checklist', 
+      category: 'operations', 
+      fieldCount: 30,
+      description: 'Pre-operational equipment safety checklist',
+      estimatedTime: '5 min'
+    },
+    { 
+      id: 'hot-work-permit', 
+      name: 'Hot Work Permit', 
+      category: 'permits', 
+      fieldCount: 26,
+      description: 'Hot work authorization and safety permit',
+      estimatedTime: '10 min'
+    },
+    { 
+      id: 'delivery-receipt', 
+      name: 'Delivery Receipt', 
+      category: 'logistics', 
+      fieldCount: 21,
+      description: 'Goods delivery verification and sign-off',
+      estimatedTime: '5 min'
+    },
+    { 
+      id: 'toolbox-talk', 
+      name: 'Toolbox Talk / Safety Meeting', 
+      category: 'safety', 
+      fieldCount: 15,
+      description: 'Safety meeting attendance and topic discussion',
+      estimatedTime: '5 min'
+    },
+    { 
+      id: 'offshore-induction-hebron', 
+      name: 'Offshore Induction Form - Hebron Platform', 
+      category: 'safety', 
+      fieldCount: 70,
+      description: 'Hebron Platform - Green Hat Program (CANE-EC-OFPRO-01-005-4008-00 | 04)',
+      estimatedTime: '20-30 min'
+    },
   ],
 }

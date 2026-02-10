@@ -8,8 +8,30 @@ const express = require('express');
 const { body, param, query, validationResult } = require('express-validator');
 const { query: dbQuery, getClient } = require('../config/database');
 const { requireRole } = require('../middleware/auth');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
+
+/**
+ * Load built-in templates from JSON file
+ */
+let builtInTemplates = [];
+try {
+  const templatesPath = path.join(__dirname, '../../../shared/templates/industrial-templates.json');
+  const templatesData = fs.readFileSync(templatesPath, 'utf8');
+  const parsedData = JSON.parse(templatesData);
+  builtInTemplates = parsedData.templates.map(template => ({
+    ...template,
+    fieldCount: template.fields?.length || 0,
+    is_public: true,
+    is_builtin: true,
+    version: template.version || '1.0'
+  }));
+  console.log(`Loaded ${builtInTemplates.length} built-in templates from JSON`);
+} catch (error) {
+  console.error('Failed to load built-in templates:', error.message);
+}
 
 /**
  * Validation middleware
@@ -24,7 +46,7 @@ const validate = (req, res, next) => {
 
 /**
  * GET /api/templates
- * List available templates
+ * List available templates (built-in + database)
  */
 router.get('/',
   [
@@ -35,63 +57,70 @@ router.get('/',
   validate,
   async (req, res, next) => {
     try {
-      const page = req.query.page || 1;
-      const limit = req.query.limit || 20;
-      const offset = (page - 1) * limit;
       const category = req.query.category;
+      
+      // Start with built-in templates
+      let allTemplates = [...builtInTemplates];
 
-      let queryText = `
-        SELECT
-          t.id, t.name, t.description, t.category, t.fields,
-          t.settings, t.is_public, t.version, t.created_at,
-          u.name as created_by_name
-        FROM form_templates t
-        LEFT JOIN users u ON t.created_by = u.id
-        WHERE t.is_active = true
-          AND (
-            t.is_public = true
-            OR t.organization_id = $1
-            OR t.created_by = $2
-          )
-      `;
-      const params = [req.user.organizationId, req.user.id];
-      let paramIndex = 3;
-
+      // Filter built-in templates by category if specified
       if (category) {
-        queryText += ` AND t.category = $${paramIndex}`;
-        params.push(category);
-        paramIndex++;
+        allTemplates = allTemplates.filter(t => 
+          t.category.toLowerCase() === category.toLowerCase()
+        );
       }
 
-      queryText += ` ORDER BY t.created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-      params.push(limit, offset);
+      // Try to fetch database templates (may fail if DB not set up)
+      try {
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 20;
+        const offset = (page - 1) * limit;
 
-      const result = await dbQuery(queryText, params);
+        let queryText = `
+          SELECT
+            t.id, t.name, t.description, t.category, t.fields,
+            t.settings, t.is_public, t.version, t.created_at,
+            u.name as created_by_name
+          FROM form_templates t
+          LEFT JOIN users u ON t.created_by = u.id
+          WHERE t.is_active = true
+            AND (
+              t.is_public = true
+              OR t.organization_id = $1
+              OR t.created_by = $2
+            )
+        `;
+        const params = [req.user.organizationId, req.user.id];
+        let paramIndex = 3;
 
-      // Get total count for pagination
-      let countQuery = `
-        SELECT COUNT(*)
-        FROM form_templates t
-        WHERE t.is_active = true
-          AND (t.is_public = true OR t.organization_id = $1 OR t.created_by = $2)
-      `;
-      const countParams = [req.user.organizationId, req.user.id];
+        if (category) {
+          queryText += ` AND t.category = $${paramIndex}`;
+          params.push(category);
+          paramIndex++;
+        }
 
-      if (category) {
-        countQuery += ` AND t.category = $3`;
-        countParams.push(category);
+        queryText += ` ORDER BY t.created_at DESC`;
+
+        const result = await dbQuery(queryText, params);
+        
+        // Add database templates with fieldCount
+        const dbTemplates = result.rows.map(t => ({
+          ...t,
+          fieldCount: Array.isArray(t.fields) ? t.fields.length : 0,
+          is_builtin: false
+        }));
+        
+        allTemplates = [...allTemplates, ...dbTemplates];
+      } catch (dbError) {
+        console.log('Database templates not available, using built-in only:', dbError.message);
       }
-
-      const countResult = await dbQuery(countQuery, countParams);
-      const total = parseInt(countResult.rows[0].count);
 
       res.json({
-        templates: result.rows,
+        templates: allTemplates,
         pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
+          page: 1,
+          limit: allTemplates.length,
+          total: allTemplates.length,
+          pages: 1
         }
       });
     } catch (error) {
@@ -102,15 +131,29 @@ router.get('/',
 
 /**
  * GET /api/templates/:id
- * Get single template
+ * Get single template (built-in or database)
  */
 router.get('/:id',
   [
-    param('id').isUUID().withMessage('Invalid template ID'),
+    param('id').notEmpty().withMessage('Template ID required'),
   ],
   validate,
   async (req, res, next) => {
     try {
+      const templateId = req.params.id;
+      
+      // First check if it's a built-in template
+      const builtInTemplate = builtInTemplates.find(t => t.id === templateId);
+      if (builtInTemplate) {
+        return res.json(builtInTemplate);
+      }
+
+      // Otherwise try database (UUID validation for DB templates)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(templateId)) {
+        return res.status(404).json({ error: 'Template not found' });
+      }
+
       const result = await dbQuery(
         `SELECT
           t.*, u.name as created_by_name
@@ -123,7 +166,7 @@ router.get('/:id',
              OR t.organization_id = $2
              OR t.created_by = $3
            )`,
-        [req.params.id, req.user.organizationId, req.user.id]
+        [templateId, req.user.organizationId, req.user.id]
       );
 
       if (result.rows.length === 0) {

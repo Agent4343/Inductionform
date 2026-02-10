@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 
 function Dashboard() {
-  const { user } = useAuth()
+  const { user, isDemoMode } = useAuth()
   const [stats, setStats] = useState(null)
   const [recentForms, setRecentForms] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -90,6 +90,23 @@ function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Demo Mode Banner */}
+      {isDemoMode && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex-shrink-0">
+              <AlertCircle className="h-5 w-5 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-medium text-amber-800">Demo Mode</h3>
+              <p className="text-sm text-amber-700 mt-1">
+                You're viewing demo data. To see real data, log in with your account credentials.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-6 text-white">
         <h1 className="text-2xl font-bold">

@@ -232,9 +232,12 @@ function Templates() {
                   >
                     Fill Form
                   </Link>
-                  <button className="text-primary-500 hover:text-primary-600 text-sm font-medium">
+                  <Link
+                    to={`/templates/${template.id}`}
+                    className="text-primary-500 hover:text-primary-600 text-sm font-medium"
+                  >
                     Details →
-                  </button>
+                  </Link>
                 </div>
               </div>
             )
@@ -281,12 +284,20 @@ function Templates() {
                     </span>
                   </div>
 
-                  <Link
-                    to={`/fill/${template.id}`}
-                    className="btn btn-primary text-sm py-1.5 px-3"
-                  >
-                    Fill
-                  </Link>
+                  <div className="flex gap-2">
+                    <Link
+                      to={`/fill/${template.id}`}
+                      className="btn btn-primary text-sm py-1.5 px-3"
+                    >
+                      Fill
+                    </Link>
+                    <Link
+                      to={`/templates/${template.id}`}
+                      className="text-primary-500 hover:text-primary-600 text-sm font-medium whitespace-nowrap"
+                    >
+                      View →
+                    </Link>
+                  </div>
                 </div>
               )
             })}
